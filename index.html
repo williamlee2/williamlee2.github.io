@@ -26,7 +26,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
   <!-- Avatar image in top left corner -->
   <img src="Assets/Logo.png" style="width:100%">
-  <a href="#" class="w3-bar-item w3-button w3-padding-large w3-black">
+  <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
     <i class="fa fa-home w3-xxlarge"></i>
     <p>HOME</p>
   </a>
@@ -36,7 +36,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   </a>
   <a href="#photos" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
     <i class="fa fa-eye w3-xxlarge"></i>
-    <p>PHOTOS</p>
+    <p>EXPERIENCE</p>
   </a>
   <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
     <i class="fa fa-envelope w3-xxlarge"></i>
@@ -49,7 +49,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
     <a href="#" class="w3-bar-item w3-button" style="width:25% !important">HOME</a>
     <a href="#about" class="w3-bar-item w3-button" style="width:25% !important">ABOUT</a>
-    <a href="#photos" class="w3-bar-item w3-button" style="width:25% !important">PHOTOS</a>
+    <a href="#photos" class="w3-bar-item w3-button" style="width:25% !important">EXPERIENCE</a>
     <a href="#contact" class="w3-bar-item w3-button" style="width:25% !important">CONTACT</a>
   </div>
 </div>
@@ -65,21 +65,30 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
   <!-- About Section -->
   <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
-    <h2 class="w3-text-light-grey">Bio</h2>
+    <h2 class="w3-text-light-grey">About me</h2>
     <hr style="width:200px" class="w3-opacity">
-    <p> Looking for a Software Development role in Vancouver.
-        TODO: add more text later
+    <p> Welcome, thank you for visiting my website. I am currently looking for software-related work in Vancouver, BC. 
+      Right now I live in Brampton, ON but I want to move to Vancouver because I think it's the greatest city on Earth ^.^
+      I graduated with a Bachelor's degree in Mathematics (Co-op) in April 2019 and
+      I have taken many courses in Computer Science, Statistics, Finance and of course Calculus + Algebra.
+      Almost all my co-op terms were at the big banks, doing Capital Markets related work and I am currently working
+      at TPA Outsourcing Inc. (a sister company of Canada Protection Plan). My work mostly consisted of software development
+      for various business operations and made use of Excel (I am an absolute GOD of Excel), Access, VBA/VBS/VB, Python, XML, HTML/CSS/Javascript.
+      My job search hasn't been very successful so far, so I built this page and started building a Java application on Github.
+      Here's a link to my repository: 
+      <a href = "https://github.com/williamlee2/williamlee2.github.io" target="_blank">https://github.com/williamlee2/williamlee2.github.io.</a>
+      Outside of work I like to play Soccer, League of Legends, World of Warcraft, Skateboard, workout and learn more about technology.
     </p>
     <h3 class="w3-padding-16 w3-text-light-grey">My Skills</h3>
-    <p class="w3-wide">Software</p>
+    <p class="w3-wide">Python</p>
     <div class="w3-white">
       <div class="w3-dark-grey" style="height:28px;width:95%"></div>
     </div>
-    <p class="w3-wide">Web Design</p>
+    <p class="w3-wide">Java</p>
     <div class="w3-white">
       <div class="w3-dark-grey" style="height:28px;width:85%"></div>
     </div>
-    <p class="w3-wide">Python</p>
+    <p class="w3-wide">C/C++</p>
     <div class="w3-white">
       <div class="w3-dark-grey" style="height:28px;width:80%"></div>
     </div><br>
@@ -94,8 +103,8 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
         GPA
       </div>
       <div class="w3-quarter w3-section">
-        <span class="w3-xlarge">4+</span><br>
-        Years Programming
+        <span class="w3-xlarge">Y+</span><br>
+        Filler
       </div>
       <div class="w3-quarter w3-section">
         <span class="w3-xlarge">X+</span><br>
@@ -104,7 +113,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     </div>
 
     <button class="w3-button w3-light-grey w3-padding-large w3-section">
-      <i class="fa fa-download"></i> Download Resume
+      <i class="fa fa-download"></i> <a href="William Lee.pdf" target="_blank">View Resume</a>
     </button>
 
   <!-- End About Section -->
@@ -113,7 +122,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <!-- Portfolio Section -->
   <div class="w3-padding-64 w3-content" id="photos">
     <h2 class="w3-text-light-grey">Where I've Worked</h2>
-    <hr style="width:200px" class="w3-opacity">
+    <hr style="width:300px" class="w3-opacity">
 
     <!-- Grid for photos -->
     <div class="w3-row-padding" style="margin:0 -16px">
@@ -150,7 +159,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
       <p><input class="w3-input w3-padding-16" type="text" placeholder="Subject" required name="Subject"></p>
       <p><input class="w3-input w3-padding-16" type="text" placeholder="Message" required name="Message"></p>
       <p>
-        <button class="w3-button w3-light-grey w3-padding-large" type="submit">
+        <button class="w3-button w3-light-grey w3-padding-large" type="submit" onclick="Email()">
           <i class="fa fa-paper-plane"></i> SEND MESSAGE
         </button>
       </p>
@@ -160,13 +169,20 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   
     <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
-    <i class="fa fa-linkedin w3-hover-opacity"></i>
+    <a href="https://www.linkedin.com/in/william-lee-50305a1b9" target="_blank" class="fa fa-linkedin w3-hover-opacity"></a>
     <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank" class="w3-hover-text-green">w3.css</a></p>
   <!-- End footer -->
   </footer>
 
 <!-- END PAGE CONTENT -->
 </div>
+
+<script>
+  function Email()
+  {
+    window.open('mailto:wflee@uwaterloo.ca');
+  }
+</script>
 
 </body>
 </html>
