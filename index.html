@@ -59,7 +59,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <!-- Header/Home -->
   <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
     <h1 class="w3-jumbo"><span class="w3-hide-small">I'm</span> William Lee.</h1>
-    <p>Data Analyst and Waterloo Grad.</p>
+    <p>Data Analyst and aspiring Software Developer.</p>
     <img src="Assets/u_waterloo_logo.png" alt="boy" class="w3-image" width="992" height="1108">
   </header>
 
@@ -74,7 +74,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
       Almost all my co-op terms were at the big banks, doing Capital Markets related work and I am currently working
       at TPA Outsourcing Inc. (a sister company of Canada Protection Plan). My work mostly consisted of software development
       for various business operations and made use of Excel (I am an absolute GOD of Excel), Access, VBA/VBS/VB, Python, XML, HTML/CSS/Javascript.
-      My job search hasn't been very successful so far, so I built this page and started building a Java application on Github.
+      My job search hasn't been very successful so far, so I built this page and started developing a Java application on Github.
       Here's a link to my repository: 
       <a href = "https://github.com/williamlee2/williamlee2.github.io" target="_blank">https://github.com/williamlee2/williamlee2.github.io.</a>
       Outside of work I like to play Soccer, League of Legends, World of Warcraft, Skateboard, workout and learn more about technology.
@@ -103,12 +103,12 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
         GPA
       </div>
       <div class="w3-quarter w3-section">
-        <span class="w3-xlarge">Y+</span><br>
-        Filler
+        <span class="w3-xlarge">100%</span><br>
+        Self-Made
       </div>
       <div class="w3-quarter w3-section">
-        <span class="w3-xlarge">X+</span><br>
-        Filler
+        <span class="w3-xlarge">$0</span><br>
+        in Debt
       </div>
     </div>
 
@@ -128,13 +128,13 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     <div class="w3-row-padding" style="margin:0 -16px">
       <div class="w3-half">
         <img src="Assets/CPP_logo.png" style="width:100%">
-        <img src="Assets/TD_logo.png" style="width:100%">
         <img src="Assets/CIBC_logo.png" style="width:100%">
-      </div>
-
-      <div class="w3-half">
-        <img src="Assets/Scotiabank_logo.png" style="width:100%">
         <img src="Assets/YORK_REGION_LOGO.jpg" style="width:100%">
+      </div>
+      
+      <div class="w3-half">
+        <img src="Assets/TD_logo.png" style="width:100%">
+        <img src="Assets/Scotiabank_logo.png" style="width:100%">
       </div>
     <!-- End photo grid -->
     </div>
@@ -153,17 +153,15 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     </div><br>
     <p>Let's get in touch. Send me a message:</p>
 
-    <form action="/action_page.php" target="_blank">
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Name" required name="Name"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Email" required name="Email"></p>
+    <div>
       <p><input class="w3-input w3-padding-16" type="text" placeholder="Subject" required name="Subject"></p>
       <p><input class="w3-input w3-padding-16" type="text" placeholder="Message" required name="Message"></p>
       <p>
-        <button class="w3-button w3-light-grey w3-padding-large" type="submit" onclick="Email()">
+        <button class="w3-button w3-light-grey w3-padding-large" onclick="email()">
           <i class="fa fa-paper-plane"></i> SEND MESSAGE
         </button>
       </p>
-    </form>
+    </div>
   <!-- End Contact Section -->
   </div>
   
@@ -178,9 +176,11 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 </div>
 
 <script>
-  function Email()
+  function email()
   {
-    window.open('mailto:wflee@uwaterloo.ca');
+    var subjectLine = document.getElementsByName("Subject")[0].value
+    var message = document.getElementsByName("Message")[0].value
+    window.open('mailto:wflee@uwaterloo.ca?subject=' + subjectLine + '&body=' + message, '_self');
   }
 </script>
 
