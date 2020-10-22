@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Image;
 import java.awt.Color;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Entity
 {
@@ -29,5 +30,13 @@ public class Entity
     {
         g.setColor(color);
         g.fillRect(x - offSetX, y - offSetY, width, length);
+    }
+
+    public void move()
+    {
+        int dx = ThreadLocalRandom.current().nextInt(-1, 1);
+        int dy = ThreadLocalRandom.current().nextInt(-1, 1);
+        x += 50 * dx;
+        y += 50 * dy;
     }
 }
