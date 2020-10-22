@@ -25,9 +25,9 @@ public class Entity
         hitBox = new Rectangle(x, y, width, length);
     }
 
-    public void paint(Graphics g)
+    public void paint(Graphics g, int offSetX, int offSetY)
     {
         g.setColor(color);
-        g.fillRect(x, y, width, length);
+        g.fillRect(x - offSetX, y - offSetY, width, length);
     }
 }
