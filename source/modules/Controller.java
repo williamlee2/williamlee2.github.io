@@ -3,7 +3,7 @@ package modules;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-class Controller implements KeyListener
+public class Controller implements KeyListener
 {
     Level lvl;
 
