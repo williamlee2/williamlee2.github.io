@@ -31,12 +31,4 @@ public class Entity
         g.setColor(color);
         g.fillRect(x - offSetX, y - offSetY, width, length);
     }
-
-    public void move()
-    {
-        int dx = ThreadLocalRandom.current().nextInt(-1, 1);
-        int dy = ThreadLocalRandom.current().nextInt(-1, 1);
-        x += 50 * dx;
-        y += 50 * dy;
-    }
 }

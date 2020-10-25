@@ -30,21 +30,25 @@ public class Controller implements KeyListener
 
         if (key == KeyEvent.VK_LEFT) {
             lvl.cameraX += -100;
+            lvl.camera.setLocation(lvl.cameraX, lvl.cameraY);
             lvl.repaint();
         }
 
         if (key == KeyEvent.VK_RIGHT) {
             lvl.cameraX += 100;
+            lvl.camera.setLocation(lvl.cameraX, lvl.cameraY);
             lvl.repaint();
         }
 
         if (key == KeyEvent.VK_UP) {
             lvl.cameraY += -100;
+            lvl.camera.setLocation(lvl.cameraX, lvl.cameraY);
             lvl.repaint();
         }
 
         if (key == KeyEvent.VK_DOWN) {
             lvl.cameraY += 100;
+            lvl.camera.setLocation(lvl.cameraX, lvl.cameraY);
             lvl.repaint();
         }
     }

@@ -15,7 +15,7 @@ public class Level extends Canvas
     final int tileLength = 64;
     final int tileWidth = 64;
     Tile[][] map = new Tile[mapLength][mapWidth];
-    ArrayList<Entity> entities = new ArrayList<Entity>();
+    ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     final int spriteLength = 32;
     final int spriteWidth = 32;
     int screenWidth;
@@ -42,7 +42,7 @@ public class Level extends Canvas
                 }
                 else
                 {
-                    map[i][j] = new Tile(i * tileLength, j * tileWidth, tileLength, tileWidth, Color.WHITE, false);
+                    map[i][j] = new Tile(i * tileLength, j * tileWidth, tileLength, tileWidth, Color.YELLOW, false);
                 }
             }
         }
@@ -51,16 +51,16 @@ public class Level extends Canvas
         {
             int x = ThreadLocalRandom.current().nextInt(tileLength + 1, (mapLength - 1) * tileLength);
             int y = ThreadLocalRandom.current().nextInt(tileWidth + 1, (mapWidth - 1) * tileWidth);
-            Entity e;
+            Enemy e;
             if (i == 0)
             {
-                e = new Entity(x, y, spriteLength, spriteWidth, Color.BLUE);
+                e = new Enemy(x, y, spriteLength, spriteWidth, Color.BLUE);
             }
             else
             {
-                e = new Entity(x, y, spriteLength, spriteWidth, Color.BLACK);
+                e = new Enemy(x, y, spriteLength, spriteWidth, Color.BLACK);
             }
-            entities.add(e);
+            enemies.add(e);
         }
     }
 
@@ -77,7 +77,7 @@ public class Level extends Canvas
             }
         }
 
-        for (Entity e : entities)
+        for (Enemy e : enemies)
         {
             if (camera.contains(e.hitBox))
             {
@@ -86,27 +86,35 @@ public class Level extends Canvas
         }
     }
 
+    public void update(Graphics g) 
+    {
+        paint(g);
+    }
+
     public void start()
     {
         try
         {
             while(running)
             {
-                for (Entity e : entities)
+                for (Enemy e : enemies)
                 {
                     int posX = e.x;
                     int posY = e.y;
-                    e.move();
-                    int mapX = e.x / tileWidth;
-                    int mapY = e.y / tileLength;
-                    if (map[mapX][mapY].collision)
+                    int mapX = (e.x + e.dx) / tileWidth;
+                    int mapY = (e.y + e.dy) / tileLength;
+                    if (map[mapX][posY / tileLength].collision)
                     {
-                        e.x = posX;
-                        e.y = posY;
+                        e.dx *= -1;
                     }
+                    if (map[posX / tileWidth][mapY].collision)
+                    {
+                        e.dy *= -1;
+                    }
+                    e.move();
                 }
                 repaint();
-                Thread.sleep(500);
+                Thread.sleep(250);
             }
         }
         catch (InterruptedException x)
