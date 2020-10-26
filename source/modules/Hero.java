@@ -8,11 +8,12 @@ public class Hero extends Entity
     int dy = 0;
     int maxSpeedX = 25;
     int maxSpeedY = 25;
-    int gravity = 0;
+    int gravity;
 
-    public Hero(int posX, int posY, int l, int w, Color c)
+    public Hero(int posX, int posY, int l, int w, Color c, int g)
     {
         super(posX, posY, l, w, c);
+        gravity = g;
     }
 
     public void move(int direction, boolean yAxis)

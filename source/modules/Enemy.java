@@ -7,11 +7,12 @@ public class Enemy extends Entity
 {
     int dx;
     int dy;
-    int gravity = 10;
+    int gravity;
 
-    public Enemy(int posX, int posY, int l, int w, Color c)
+    public Enemy(int posX, int posY, int l, int w, Color c, int g)
     {
         super(posX, posY, l, w, c);
+        gravity = g;
         // initial speeds either 25 or -25, avoid zero speeds
         dx = 25 * ThreadLocalRandom.current().nextInt(2);
         dy = 25 * ThreadLocalRandom.current().nextInt(2);

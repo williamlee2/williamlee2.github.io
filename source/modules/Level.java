@@ -20,6 +20,7 @@ public class Level extends Canvas
     Hero samus;
     final int spriteLength = 32;
     final int spriteWidth = 32;
+    final int gravity = 10;
     int screenWidth;
     int screenHeight;
     Rectangle camera;
@@ -55,11 +56,11 @@ public class Level extends Canvas
             // random spawn locations inside map
             int x = ThreadLocalRandom.current().nextInt(tileLength + 1, (mapLength - 1) * tileLength);
             int y = ThreadLocalRandom.current().nextInt(tileWidth + 1, (mapWidth - 1) * tileWidth);
-            Enemy e = new Enemy(x, y, spriteLength, spriteWidth, Color.BLACK);
+            Enemy e = new Enemy(x, y, spriteLength, spriteWidth, Color.BLACK, gravity);
             enemies.add(e);
         }
 
-        samus = new Hero(500, 500, spriteLength, spriteWidth, Color.BLUE);
+        samus = new Hero(500, 500, spriteLength, spriteWidth, Color.BLUE, gravity);
     }
 
     public void render(Graphics g)
@@ -93,6 +94,44 @@ public class Level extends Canvas
         }
     }
 
+    public int checkCollision(int x, int y, int dx, int dy)
+    {
+        int collision = 0;
+        // current position
+        int posX = x / tileWidth;
+        int posY = y / tileLength;
+        // next position
+        int mapX = (x + dx) / tileWidth;
+        int mapY = (y + dy) / tileLength;
+        if ((0 <= mapX && mapX < mapLength) && (0 <= mapY && mapY < mapWidth))
+        {
+            // check for future collisions
+            if (map[mapX][posY].collision)
+            {
+                // horizontal collision
+                collision += 1;
+            }
+            if (map[posX][mapY].collision)
+            {
+                // vertical collision
+                collision += 2;
+            }
+        }
+        else
+        {
+            // out of bounds
+            if (mapX >= mapLength || mapX < 0)
+            {
+                collision += 1;
+            }
+            if (mapY >= mapWidth || mapY < 0)
+            {
+                collision += 2;
+            }
+        }
+        return collision;
+    }
+
     public void start()
     {
         try
@@ -107,37 +146,25 @@ public class Level extends Canvas
                     {
                         for (Enemy e : enemies)
                         {
-                            int posX = e.x;
-                            int posY = e.y;
-                            // map coordinates
-                            int mapX = (e.x + e.dx) / tileWidth;
-                            int mapY = (e.y + e.dy) / tileLength;
-                            if ((0 <= mapX && mapX < mapLength) && (0 <= mapY && mapY < mapWidth))
+                            int collision = checkCollision(e.x, e.y, e.dx, e.dy);
+                            if (collision == 1 || collision == 3)
                             {
-                                // check for future collisions
-                                if (map[mapX][posY / tileLength].collision)
-                                {
-                                    // check horizontal
-                                    e.dx *= -1;
-                                }
-                                if (map[posX / tileWidth][mapY].collision)
-                                {
-                                    // check vertical
-                                    e.dy = 0;
-                                }
+                                e.dx *= -1;
                             }
-                            else
+                            if (collision >= 2)
                             {
-                                if (mapX >= mapLength || mapX < 0)
-                                {
-                                    e.dx *= -1;
-                                }
-                                else
-                                {
-                                    e.dy = 0;
-                                }
+                                e.dy = 0;
                             }
                             e.move();
+                        }
+                        int collision = checkCollision(samus.x, samus.y, samus.dx, samus.dy);
+                        if (collision == 1 || collision == 3)
+                        {
+                            samus.dx = 0;
+                        }
+                        if (collision >= 2)
+                        {
+                            samus.dy = 0;
                         }
                         samus.move();
 
