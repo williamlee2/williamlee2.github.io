@@ -4,7 +4,8 @@ import java.awt.Rectangle;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Stack;
 import java.util.concurrent.ThreadLocalRandom;
 import java.lang.Thread;
 import java.awt.image.BufferStrategy;
@@ -16,7 +17,7 @@ public class Level extends Canvas
     final int tileLength = 64;
     final int tileWidth = 64;
     Tile[][] map = new Tile[mapLength][mapWidth];
-    ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    Hashtable<Integer, Enemy> enemies = new Hashtable<Integer, Enemy>();
     Hero samus;
     final int spriteLength = 32;
     final int spriteWidth = 32;
@@ -26,7 +27,7 @@ public class Level extends Canvas
     Rectangle camera;
     int cameraX = 0;
     int cameraY = 0;
-    boolean running = true;
+    boolean playing = true;
 
     public Level(int width, int height)
     {        
@@ -57,10 +58,14 @@ public class Level extends Canvas
             int x = ThreadLocalRandom.current().nextInt(tileLength + 1, (mapLength - 1) * tileLength);
             int y = ThreadLocalRandom.current().nextInt(tileWidth + 1, (mapWidth - 1) * tileWidth);
             Enemy e = new Enemy(x, y, spriteLength, spriteWidth, Color.BLACK, gravity);
-            enemies.add(e);
+            enemies.put(x, e);
         }
 
-        samus = new Hero(500, 500, spriteLength, spriteWidth, Color.BLUE, gravity);
+        samus = new Hero(
+            (mapLength / 2) * tileLength, (mapWidth / 2) * tileWidth, 
+            spriteLength, spriteWidth, 
+            Color.BLUE, gravity
+        );
     }
 
     public void render(Graphics g)
@@ -79,7 +84,7 @@ public class Level extends Canvas
             }
         }
 
-        for (Enemy e : enemies)
+        for (Enemy e : enemies.values())
         {
             // only render visible enemies
             if (camera.contains(e.hitBox))
@@ -91,6 +96,14 @@ public class Level extends Canvas
         if (camera.contains(samus.hitBox))
         {
             samus.paint(g, cameraX, cameraY);
+        }
+
+        for (Projectile p: samus.bullets)
+        {
+            if (camera.contains(p.hitBox))
+            {
+                p.paint(g, cameraX, cameraY);
+            }   
         }
     }
 
@@ -132,55 +145,120 @@ public class Level extends Canvas
         return collision;
     }
 
+    public void update()
+    {
+        int collision;
+        Stack<Integer> garbage = new Stack<Integer>();
+
+        // update projectiles
+        for (int i = 0; i < samus.bullets.size(); i++)
+        {
+            Projectile p = samus.bullets.get(i);
+            collision = checkCollision(p.x, p.y, p.dx, p.dy);
+            // check if bullet hits enemy
+            if (enemies.containsKey(p.x))
+            {
+                // hit
+                Enemy e = enemies.get(p.x);
+                if (e.hitBox.contains(p.hitBox)) 
+                {
+                    e.hit(p);
+                    garbage.push(i);
+                }
+                else
+                {
+                    p.move();
+                }
+            }
+            else
+            {
+                if (collision != 0)
+                {
+                    // out of bounds
+                    garbage.push(i);
+                }
+                else
+                {
+                    p.move();
+                }
+            }
+        }
+
+        while(!garbage.isEmpty())
+        {
+            samus.bullets.remove(garbage.pop());
+        }
+
+        // update samus
+        collision = checkCollision(samus.x, samus.y, samus.dx, samus.dy);
+        if (collision == 1 || collision == 3)
+        {
+            samus.dx = 0;
+        }
+        if (collision >= 2)
+        {
+            samus.dy = 0;
+        }
+        samus.move();
+
+        // update enemies
+        for (Enemy e : enemies.values())
+        {
+            if (e.health <= 0)
+            {
+                garbage.push(e.x);
+            }
+            else
+            {
+                collision = checkCollision(e.x, e.y, e.dx, e.dy);
+                if (collision == 1 || collision == 3)
+                {
+                    e.dx *= -1;
+                }
+                if (collision >= 2)
+                {
+                    e.dy = 0;
+                }
+                e.move();
+            }
+        }
+        while(!garbage.empty())
+        {
+            enemies.remove(garbage.pop());
+        }
+
+        // need to update hashtable keys
+    }
+
     public void start()
     {
         try
         {
             createBufferStrategy(2);
             BufferStrategy bufferStrat = getBufferStrategy();
-            while(running)
+            // game + rendering loop
+            while(playing)
             {
                 do
                 {
                     do
                     {
-                        for (Enemy e : enemies)
-                        {
-                            int collision = checkCollision(e.x, e.y, e.dx, e.dy);
-                            if (collision == 1 || collision == 3)
-                            {
-                                e.dx *= -1;
-                            }
-                            if (collision >= 2)
-                            {
-                                e.dy = 0;
-                            }
-                            e.move();
-                        }
-                        int collision = checkCollision(samus.x, samus.y, samus.dx, samus.dy);
-                        if (collision == 1 || collision == 3)
-                        {
-                            samus.dx = 0;
-                        }
-                        if (collision >= 2)
-                        {
-                            samus.dy = 0;
-                        }
-                        samus.move();
-
+                        update();
                         Graphics g = bufferStrat.getDrawGraphics();
                         render(g);
                         g.dispose();
                         // framerate and gamespeed
                         Thread.sleep(50);
                     } while (bufferStrat.contentsRestored());
+
                     bufferStrat.show();
+
                 } while (bufferStrat.contentsLost());
             }
         }
         catch (InterruptedException x)
         {
-            running = false;
+            playing = false;
         }
     }
 }

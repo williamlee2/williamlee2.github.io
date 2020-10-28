@@ -23,7 +23,23 @@ public class Controller implements KeyListener
 
     public void keyReleased(KeyEvent e) 
     {
-        
+        int key = e.getKeyCode();
+
+        if (key == KeyEvent.VK_A) {
+            lvl.samus.endMove(1);
+        }
+
+        if (key == KeyEvent.VK_D) {
+            lvl.samus.endMove(1);
+        }
+
+        if (key == KeyEvent.VK_S) {
+            lvl.samus.endCrouch();
+        }
+
+        if (key == KeyEvent.VK_W) {
+            lvl.samus.swapWeapon();
+        }
     }
 
     public void keyPressed(KeyEvent e) 
@@ -50,7 +66,7 @@ public class Controller implements KeyListener
             lvl.camera.setLocation(lvl.cameraX, lvl.cameraY);
         }
 
-        if (key == KeyEvent.VK_W) {
+        if (key == KeyEvent.VK_SPACE) {
             lvl.samus.move(-1, true);
         }
 
@@ -59,11 +75,17 @@ public class Controller implements KeyListener
         }
 
         if (key == KeyEvent.VK_S) {
-            lvl.samus.move(1, true);
+            lvl.samus.startCrouch();
         }
 
         if (key == KeyEvent.VK_D) {
             lvl.samus.move(1, false);
+        }
+
+        // change to trigger on mouse left click
+        if (key == KeyEvent.VK_K)
+        {
+            lvl.samus.shoot();
         }
     }
 }
