@@ -44,8 +44,8 @@ public class Enemy extends Entity
         hitBox.setLocation(x, y);
     }
 
-    public void hit(Projectile p)
+    public void hit(int damage)
     {
-        health -= p.damage;
+        health -= damage;
     }
 }

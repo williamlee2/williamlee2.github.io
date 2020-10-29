@@ -113,9 +113,25 @@ public class Level extends Canvas
         // current position
         int posX = x / tileWidth;
         int posY = y / tileLength;
+        int mapX;
+        int mapY;
         // next position
-        int mapX = (x + dx) / tileWidth;
-        int mapY = (y + dy) / tileLength;
+        if (dx != 0)
+        {
+            mapX = posX + (dx / Math.abs(dx));
+        }
+        else
+        {
+            mapX = posX;
+        }
+        if (dy != 0)
+        {
+            mapY = posY + (dy / Math.abs(dy));
+        }
+        else
+        {
+            mapY = posY;
+        }
         if ((0 <= mapX && mapX < mapLength) && (0 <= mapY && mapY < mapWidth))
         {
             // check for future collisions
@@ -162,7 +178,7 @@ public class Level extends Canvas
                 Enemy e = enemies.get(p.x);
                 if (e.hitBox.contains(p.hitBox)) 
                 {
-                    e.hit(p);
+                    e.hit(p.damage);
                     garbage.push(i);
                 }
                 else
@@ -202,32 +218,31 @@ public class Level extends Canvas
         samus.move();
 
         // update enemies
+        Stack<Enemy> temp = new Stack<Enemy>();
         for (Enemy e : enemies.values())
         {
-            if (e.health <= 0)
+            temp.push(e);
+            collision = checkCollision(e.x, e.y, e.dx, e.dy);
+            if (collision == 1 || collision == 3)
             {
-                garbage.push(e.x);
+                e.dx *= -1;
             }
-            else
+            if (collision >= 2)
             {
-                collision = checkCollision(e.x, e.y, e.dx, e.dy);
-                if (collision == 1 || collision == 3)
-                {
-                    e.dx *= -1;
-                }
-                if (collision >= 2)
-                {
-                    e.dy = 0;
-                }
-                e.move();
+                e.dy = 0;
             }
-        }
-        while(!garbage.empty())
-        {
-            enemies.remove(garbage.pop());
+            e.move();
         }
 
-        // need to update hashtable keys
+        enemies.clear();
+        while(!temp.empty())
+        {
+            Enemy e = temp.pop();
+            if (e.health > 0)
+            {
+                enemies.put(e.x, e);
+            }
+        }
     }
 
     public void start()
