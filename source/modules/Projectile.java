@@ -8,9 +8,10 @@ public class Projectile extends Entity
     int dx = 50;
     int dy = 0;
 
-    public Projectile(int posX, int posY, int l, int w, Color c)
+    public Projectile(int posX, int posY, int l, int w, Color c, int direction)
     {
         super(posX, posY, l, w, c);
+        dx *= direction;
     }
 
     public void move()

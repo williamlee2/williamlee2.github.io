@@ -9,6 +9,7 @@ public class Hero extends Entity
     int dy = 0;
     int dxMax = 25;
     int dyMax = 25;
+    int xDirection = 1;
     int gravity;
     boolean crouch = false;
     ArrayList<Projectile> bullets = new ArrayList<Projectile>();
@@ -30,6 +31,7 @@ public class Hero extends Entity
         else
         {
             dx = dxMax * direction;
+            xDirection = direction;
         }
     }
 
@@ -73,6 +75,6 @@ public class Hero extends Entity
 
     public void shoot()
     {
-        bullets.add(new Projectile(x + dx, y, 16, 16, Color.RED));
+        bullets.add(new Projectile(x + dx, y, 16, 16, Color.RED, xDirection));
     }
 }
