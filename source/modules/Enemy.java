@@ -31,17 +31,14 @@ public class Enemy extends Entity
 
     public void move()
     {
-        if (dy != 0)
-        {
-            dy += gravity;
-        }
+        x += dx;
+        y += dy;
+        hitBox.setLocation(x, y);
+        dy += gravity;
         if (Math.abs(dy) > Math.abs(dyMax))
         {
             dy = (dy / Math.abs(dy)) * dyMax;
         }
-        x += dx;
-        y += dy;
-        hitBox.setLocation(x, y);
     }
 
     public void hit(int damage)

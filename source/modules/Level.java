@@ -96,8 +96,7 @@ public class Level extends Canvas
         for (int x : enemies.keySet())
         {
             // only render visible enemies
-            Stack<Enemy> enemyStack = enemies.get(x);
-            for (Enemy e: enemyStack)
+            for (Enemy e: enemies.get(x))
             {
                 if (camera.contains(e.hitBox))
                 {
@@ -176,12 +175,13 @@ public class Level extends Canvas
         return collision;
     }
 
+
+    // update projectiles, samus, enemies
     public void update()
     {
         int collision;
         Stack<Integer> garbage = new Stack<Integer>();
 
-        // TODO: fix projectiles not being destroyed
         for (int i = 0; i < samus.bullets.size(); i++)
         {
             Projectile p = samus.bullets.get(i);
@@ -189,24 +189,11 @@ public class Level extends Canvas
             // check if bullet hits enemy
             if (enemies.containsKey(p.x / tileLength))
             {
-                // hit
-                Stack<Enemy> stackEnemies = enemies.get(p.x / tileLength);
-                for (Enemy e: stackEnemies)
+                for (Enemy e: enemies.get(p.x / tileLength))
                 {
-                    if (((p.x <= e.x && e.x <= p.x + p.dx) || (p.x >= e.x && e.x >= p.x + p.dx)) 
-                        && (p.y <= e.y && e.y <= p.y + p.width))
-                    {
-                        e.hit(p.damage);
-                        garbage.push(i);
-                    }
-                    else if (collision > 0)
-                    {
-                        garbage.push(i);
-                    }
-                    else
-                    {
-                        p.move();
-                    }
+                    // Add logic to check for hit
+                    e.hit(p.damage);
+                    garbage.push(i);
                 }
             }
             else
@@ -225,7 +212,8 @@ public class Level extends Canvas
 
         while(!garbage.isEmpty())
         {
-            samus.bullets.remove(garbage.pop());
+            int x = garbage.pop();
+            samus.bullets.remove(x);
         }
 
         // update samus
@@ -243,8 +231,7 @@ public class Level extends Canvas
         Stack<Enemy> allEnemies = new Stack<Enemy>();
         for (int x : enemies.keySet())
         {
-            Stack<Enemy> enemyStack = enemies.get(x);
-            for (Enemy e : enemyStack)
+            for (Enemy e : enemies.get(x))
             {
                 collision = checkCollision(e.x, e.y, e.dx, e.dy);
                 if (collision == 1 || collision == 3)
