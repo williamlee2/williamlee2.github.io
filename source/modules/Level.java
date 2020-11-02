@@ -4,9 +4,9 @@ import java.awt.Rectangle;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.Collections;
 import java.lang.Thread;
 import java.awt.image.BufferStrategy;
 
@@ -17,7 +17,7 @@ public class Level extends Canvas
     final int tileLength = 64;
     final int tileWidth = 64;
     Tile[][] map = new Tile[mapLength][mapWidth];
-    HashMap<Integer, Stack<Enemy>> enemies = new HashMap<Integer, Stack<Enemy>>();
+    ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     Hero samus;
     final int spriteLength = 32;
     final int spriteWidth = 32;
@@ -52,22 +52,13 @@ public class Level extends Canvas
             }
         }
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 5; i++)
         {
             // random spawn locations inside map
             int x = ThreadLocalRandom.current().nextInt(tileLength + 1, (mapLength - 1) * tileLength);
             int y = ThreadLocalRandom.current().nextInt(tileWidth + 1, (mapWidth - 1) * tileWidth);
             Enemy e = new Enemy(x, y, spriteLength, spriteWidth, Color.BLACK, gravity);
-            if (enemies.containsKey(x / mapLength))
-            {
-                enemies.get(x / mapLength).add(e);
-            }
-            else
-            {
-                Stack<Enemy> temp = new Stack<Enemy>();
-                temp.push(e);
-                enemies.put(x / mapLength, temp);
-            }
+            enemies.add(e);
         }
 
         samus = new Hero(
@@ -93,15 +84,12 @@ public class Level extends Canvas
             }
         }
 
-        for (int x : enemies.keySet())
+        // only render visible enemies
+        for (Enemy e: enemies)
         {
-            // only render visible enemies
-            for (Enemy e: enemies.get(x))
+            if (camera.contains(e.hitBox))
             {
-                if (camera.contains(e.hitBox))
-                {
-                    e.paint(g, cameraX, cameraY);
-                }
+                e.paint(g, cameraX, cameraY);
             }
         }
 
@@ -111,7 +99,6 @@ public class Level extends Canvas
             samus.paint(g, cameraX, cameraY);
         }
 
-        // something wrong here...
         for (Projectile p: samus.bullets)
         {
             if (camera.contains(p.hitBox))
@@ -177,31 +164,37 @@ public class Level extends Canvas
 
 
     // update projectiles, samus, enemies
-    public void update()
+    public void updateGame()
     {
         int collision;
-        Stack<Integer> garbage = new Stack<Integer>();
+        ArrayList<Projectile> garbage = new ArrayList<Projectile>();
 
         for (int i = 0; i < samus.bullets.size(); i++)
         {
             Projectile p = samus.bullets.get(i);
             collision = checkCollision(p.x, p.y, p.dx, p.dy);
+            Boolean hit = false;
             // check if bullet hits enemy
-            if (enemies.containsKey(p.x / tileLength))
+            for (Enemy e: enemies)
             {
-                for (Enemy e: enemies.get(p.x / tileLength))
+                if (e.hitBox.intersects(p.hitBox))
                 {
-                    // Add logic to check for hit
+                    hit = true;
                     e.hit(p.damage);
-                    garbage.push(i);
+                    if (e.health <= 0)
+                    {
+                        enemies.remove(e);
+                    }
+                    garbage.add(p);
+                    break;
                 }
             }
-            else
+            if (!hit)
             {
                 if (collision != 0)
                 {
                     // out of bounds
-                    garbage.push(i);
+                    garbage.add(p);
                 }
                 else
                 {
@@ -210,10 +203,9 @@ public class Level extends Canvas
             }
         }
 
-        while(!garbage.isEmpty())
+        for (Projectile p: garbage)
         {
-            int x = garbage.pop();
-            samus.bullets.remove(x);
+            samus.bullets.remove(p);
         }
 
         // update samus
@@ -228,43 +220,21 @@ public class Level extends Canvas
         }
         samus.move();
 
-        Stack<Enemy> allEnemies = new Stack<Enemy>();
-        for (int x : enemies.keySet())
+        for (Enemy e : enemies)
         {
-            for (Enemy e : enemies.get(x))
+            collision = checkCollision(e.x, e.y, e.dx, e.dy);
+            if (collision == 1 || collision == 3)
             {
-                collision = checkCollision(e.x, e.y, e.dx, e.dy);
-                if (collision == 1 || collision == 3)
-                {
-                    e.dx *= -1;
-                }
-                if (collision >= 2)
-                {
-                    e.dy = 0;
-                }
-                e.move();
-                allEnemies.push(e);
+                e.dx *= -1;
             }
+            if (collision >= 2)
+            {
+                e.dy = 0;
+            }
+            e.move();
         }
 
-        enemies.clear();
-        while(!allEnemies.empty())
-        {
-            Enemy e = allEnemies.pop();
-            if (e.health > 0)
-            {
-                if (enemies.containsKey(e.x / mapLength))
-                {
-                    enemies.get(e.x / mapLength).add(e);
-                }
-                else
-                {
-                    Stack<Enemy> temp = new Stack<Enemy>();
-                    temp.push(e);
-                    enemies.put(e.x / mapLength, temp);
-                }
-            }
-        }
+        Collections.sort(enemies);
     }
 
     public void start()
@@ -280,17 +250,17 @@ public class Level extends Canvas
                 {
                     do
                     {
-                        update();
                         Graphics g = bufferStrat.getDrawGraphics();
                         render(g);
                         g.dispose();
                         // framerate and gamespeed
-                        Thread.sleep(50);
+                        Thread.sleep(30);
                     } while (bufferStrat.contentsRestored());
-
+                    
                     bufferStrat.show();
-
+                    
                 } while (bufferStrat.contentsLost());
+                updateGame();
             }
         }
         catch (InterruptedException x)

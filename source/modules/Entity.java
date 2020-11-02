@@ -6,9 +6,9 @@ import java.awt.Image;
 import java.awt.Color;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Entity
+public class Entity implements Comparable<Entity>
 {
-    int x = 0;
+    Integer x = 0;
     int y = 0;
     int length = 0;
     int width = 0;
@@ -30,5 +30,10 @@ public class Entity
     {
         g.setColor(color);
         g.fillRect(x - offSetX, y - offSetY, width, length);
+    }
+
+    public int compareTo(Entity e) 
+    {
+        return this.x.compareTo(e.x);
     }
 }

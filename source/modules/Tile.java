@@ -1,6 +1,7 @@
 package modules;
 
 import java.awt.Color;
+import java.awt.Graphics;
 
 public class Tile extends Entity
 {
@@ -10,5 +11,10 @@ public class Tile extends Entity
     {
         super(posX, posY, l, w, c);
         collision = b;
+    }
+
+    public void paint(Graphics g, int offSetX, int offSetY)
+    {
+        g.drawRect(x - offSetX, y - offSetY, width, length);
     }
 }
