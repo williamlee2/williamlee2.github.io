@@ -12,9 +12,9 @@ public class Entity implements Comparable<Entity>
     int y = 0;
     int length = 0;
     int width = 0;
-    Color color;
+    Color color = null;
     Rectangle hitBox;
-    Image sprite;
+    Image sprite = null;
 
     public Entity(int posX, int posY, int l, int w, Color c)
     {
@@ -26,10 +26,27 @@ public class Entity implements Comparable<Entity>
         hitBox = new Rectangle(x, y, width, length);
     }
 
+    public Entity(int posX, int posY, int l, int w, Image i)
+    {
+        x = posX;
+        y = posY;
+        length = l;
+        width = w;
+        sprite = i;
+        hitBox = new Rectangle(x, y, width, length);
+    }
+
     public void paint(Graphics g, int offSetX, int offSetY)
     {
-        g.setColor(color);
-        g.fillRect(x - offSetX, y - offSetY, width, length);
+        if (sprite == null)
+        {
+            g.setColor(color);
+            g.fillRect(x - offSetX, y - offSetY, width, length);
+        }
+        else
+        {
+            g.drawImage(sprite, x - offSetX, y - offSetY, null);
+        }
     }
 
     public int compareTo(Entity e) 

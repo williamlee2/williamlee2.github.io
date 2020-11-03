@@ -4,11 +4,15 @@ import java.awt.Rectangle;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.Collections;
 import java.lang.Thread;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import javax.imageio.*;
+import java.io.*;
 
 public class Level extends Canvas
 {
@@ -20,14 +24,16 @@ public class Level extends Canvas
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     Hero samus;
     final int spriteLength = 32;
-    final int spriteWidth = 32;
-    final int gravity = 10;
+    final int spriteWidth = 64;
+    final int gravity = 5;
     int screenWidth;
     int screenHeight;
     Rectangle camera;
     int cameraX = 0;
     int cameraY = 0;
     boolean playing = true;
+    Image sprite;
+    Image samusSprite;
 
     public Level(int width, int height)
     {        
@@ -35,6 +41,8 @@ public class Level extends Canvas
         screenWidth = width;
         screenHeight = height;
         setSize(width, height);
+
+        sprite = getImage("modules/TEST_BACKGROUND.png", width, height);
         
         for (int i = 0; i < mapLength; i++)
         {
@@ -43,11 +51,25 @@ public class Level extends Canvas
                 if (i == 0 || j == 0 || i == mapLength - 1 || j == mapWidth - 1)
                 {
                     // edges of map
-                    map[i][j] = new Tile(i * tileLength, j * tileWidth, tileLength, tileWidth, Color.GREEN, true);
+                    if (sprite == null)
+                    {
+                        map[i][j] = new Tile(i * tileLength, j * tileWidth, tileLength, tileWidth, Color.GREEN, true);
+                    }
+                    else
+                    {
+                        map[i][j] = new Tile(i * tileLength, j * tileWidth, tileLength, tileWidth, sprite, true);
+                    }
                 }
                 else
                 {
-                    map[i][j] = new Tile(i * tileLength, j * tileWidth, tileLength, tileWidth, Color.YELLOW, false);
+                    if (sprite == null)
+                    {
+                        map[i][j] = new Tile(i * tileLength, j * tileWidth, tileLength, tileWidth, Color.YELLOW, false);
+                    }
+                    else
+                    {
+                        map[i][j] = new Tile(i * tileLength, j * tileWidth, tileLength, tileWidth, sprite, false);
+                    }
                 }
             }
         }
@@ -55,17 +77,43 @@ public class Level extends Canvas
         for (int i = 0; i < 5; i++)
         {
             // random spawn locations inside map
-            int x = ThreadLocalRandom.current().nextInt(tileLength + 1, (mapLength - 1) * tileLength);
-            int y = ThreadLocalRandom.current().nextInt(tileWidth + 1, (mapWidth - 1) * tileWidth);
-            Enemy e = new Enemy(x, y, spriteLength, spriteWidth, Color.BLACK, gravity);
+            int x = ThreadLocalRandom.current().nextInt(1, (mapLength - 1)) * tileLength;
+            int y = (mapWidth / 2) * tileWidth;
+            Enemy e = new Enemy(x, y, spriteLength, spriteWidth, Color.WHITE, gravity);
             enemies.add(e);
         }
 
-        samus = new Hero(
-            (mapLength / 2) * tileLength, (mapWidth / 2) * tileWidth, 
-            spriteLength, spriteWidth, 
-            Color.BLUE, gravity
-        );
+        samusSprite = getImage("modules/SAMUS_RIGHT.png", spriteLength, spriteWidth);
+        if (samusSprite == null)
+        {
+            samus = new Hero(
+                (mapLength / 2) * tileLength, (mapWidth / 2) * tileWidth, 
+                spriteLength, spriteWidth, 
+                Color.BLUE, gravity
+            );
+        }
+        else
+        {
+            samus = new Hero(
+                (mapLength / 2) * tileLength, (mapWidth / 2) * tileWidth, 
+                spriteLength, spriteWidth, 
+                samusSprite, gravity
+            );
+        }
+    }
+
+    public Image getImage(String fileName, int width, int height)
+    {
+        try 
+        {
+            BufferedImage bufferedSprite = ImageIO.read(new File(fileName));
+            return bufferedSprite.getScaledInstance(width, height, Image.SCALE_DEFAULT);
+        } 
+        catch (IOException e) 
+        {
+            System.out.println("Failed to load background");
+            return null;
+        }
     }
 
     public void render(Graphics g)
@@ -174,6 +222,14 @@ public class Level extends Canvas
             Projectile p = samus.bullets.get(i);
             collision = checkCollision(p.x, p.y, p.dx, p.dy);
             Boolean hit = false;
+            if (p.dx > 0)
+            {
+                Collections.sort(enemies);
+            }
+            else
+            {
+                Collections.sort(enemies, Collections.reverseOrder());
+            }
             // check if bullet hits enemy
             for (Enemy e: enemies)
             {
@@ -225,7 +281,7 @@ public class Level extends Canvas
             collision = checkCollision(e.x, e.y, e.dx, e.dy);
             if (collision == 1 || collision == 3)
             {
-                e.dx *= -1;
+                e.dx = 0;
             }
             if (collision >= 2)
             {
@@ -234,7 +290,7 @@ public class Level extends Canvas
             e.move();
         }
 
-        Collections.sort(enemies);
+        
     }
 
     public void start()
@@ -246,6 +302,7 @@ public class Level extends Canvas
             // game + rendering loop
             while(playing)
             {
+                updateGame();
                 do
                 {
                     do
@@ -253,14 +310,11 @@ public class Level extends Canvas
                         Graphics g = bufferStrat.getDrawGraphics();
                         render(g);
                         g.dispose();
-                        // framerate and gamespeed
-                        Thread.sleep(30);
                     } while (bufferStrat.contentsRestored());
-                    
                     bufferStrat.show();
-                    
                 } while (bufferStrat.contentsLost());
-                updateGame();
+                // framerate and gamespeed
+                Thread.sleep(30);
             }
         }
         catch (InterruptedException x)

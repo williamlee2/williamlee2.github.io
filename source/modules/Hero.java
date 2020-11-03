@@ -1,6 +1,7 @@
 package modules;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.util.ArrayList;
 
 public class Hero extends Entity
@@ -20,12 +21,22 @@ public class Hero extends Entity
         gravity = g;
     }
 
+    public Hero(int posX, int posY, int l, int w, Image i, int g)
+    {
+        super(posX, posY, l, w, i);
+        gravity = g;
+    }
+
     public void move(int direction, boolean yAxis)
     {
         // vertical
         if (yAxis)
         {
-            dy = dxMax * direction;
+            // only jump if at rest
+            if (dy == gravity)
+            {
+                dy = dxMax * direction;
+            }
         }
         // horizontal
         else
