@@ -16,15 +16,15 @@ import java.io.*;
 
 public class Level extends Canvas
 {
-    final int mapLength = 30;
-    final int mapWidth = 16;
-    final int tileLength = 64;
+    final int mapWidth = 30;
+    final int mapHeight = 16;
     final int tileWidth = 64;
-    Tile[][] map = new Tile[mapLength][mapWidth];
+    final int tileHeight = 64;
+    Tile[][] map = new Tile[mapWidth][mapHeight];
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     Hero samus;
-    final int spriteLength = 32;
-    final int spriteWidth = 64;
+    final int spriteWidth = 32;
+    final int spriteHeight = 64;
     final int gravity = 5;
     int screenWidth;
     int screenHeight;
@@ -44,31 +44,31 @@ public class Level extends Canvas
 
         sprite = getImage("modules/TEST_BACKGROUND.png", width, height);
         
-        for (int i = 0; i < mapLength; i++)
+        for (int i = 0; i < mapWidth; i++)
         {
-            for (int j = 0; j < mapWidth; j++)
+            for (int j = 0; j < mapHeight; j++)
             {
-                if (i == 0 || j == 0 || i == mapLength - 1 || j == mapWidth - 1)
+                if (i == 0 || j == 0 || i == mapWidth - 1 || j == mapHeight - 1)
                 {
                     // edges of map
                     if (sprite == null)
                     {
-                        map[i][j] = new Tile(i * tileLength, j * tileWidth, tileLength, tileWidth, Color.GREEN, true);
+                        map[i][j] = new Tile(i * tileWidth, j * tileHeight, tileWidth, tileHeight, Color.GREEN, true);
                     }
                     else
                     {
-                        map[i][j] = new Tile(i * tileLength, j * tileWidth, tileLength, tileWidth, sprite, true);
+                        map[i][j] = new Tile(i * tileWidth, j * tileHeight, tileWidth, tileHeight, sprite, true);
                     }
                 }
                 else
                 {
                     if (sprite == null)
                     {
-                        map[i][j] = new Tile(i * tileLength, j * tileWidth, tileLength, tileWidth, Color.YELLOW, false);
+                        map[i][j] = new Tile(i * tileWidth, j * tileHeight, tileWidth, tileHeight, Color.YELLOW, false);
                     }
                     else
                     {
-                        map[i][j] = new Tile(i * tileLength, j * tileWidth, tileLength, tileWidth, sprite, false);
+                        map[i][j] = new Tile(i * tileWidth, j * tileHeight, tileWidth, tileHeight, sprite, false);
                     }
                 }
             }
@@ -77,26 +77,26 @@ public class Level extends Canvas
         for (int i = 0; i < 5; i++)
         {
             // random spawn locations inside map
-            int x = ThreadLocalRandom.current().nextInt(1, (mapLength - 1)) * tileLength;
-            int y = (mapWidth / 2) * tileWidth;
-            Enemy e = new Enemy(x, y, spriteLength, spriteWidth, Color.WHITE, gravity);
+            int x = ThreadLocalRandom.current().nextInt(1, (mapWidth - 1)) * tileWidth;
+            int y = (mapHeight / 2) * tileHeight;
+            Enemy e = new Enemy(x, y, spriteWidth, spriteHeight, Color.WHITE, gravity);
             enemies.add(e);
         }
 
-        samusSprite = getImage("modules/SAMUS_RIGHT.png", spriteLength, spriteWidth);
+        samusSprite = getImage("modules/SAMUS_RIGHT.png", spriteWidth, spriteHeight);
         if (samusSprite == null)
         {
             samus = new Hero(
-                (mapLength / 2) * tileLength, (mapWidth / 2) * tileWidth, 
-                spriteLength, spriteWidth, 
+                (mapWidth / 2) * tileWidth, (mapHeight / 2) * tileHeight, 
+                spriteWidth, spriteHeight, 
                 Color.BLUE, gravity
             );
         }
         else
         {
             samus = new Hero(
-                (mapLength / 2) * tileLength, (mapWidth / 2) * tileWidth, 
-                spriteLength, spriteWidth, 
+                (mapWidth / 2) * tileWidth, (mapHeight / 2) * tileHeight, 
+                spriteWidth, spriteHeight, 
                 samusSprite, gravity
             );
         }
@@ -120,9 +120,9 @@ public class Level extends Canvas
     {
         g.clearRect(0, 0, screenWidth, screenHeight);
         
-        for (int i = 0; i < mapLength; i++)
+        for (int i = 0; i < mapWidth; i++)
         {
-            for (int j = 0; j < mapWidth; j++)
+            for (int j = 0; j < mapHeight; j++)
             {
                 // only render visible tiles
                 if (camera.contains(map[i][j].hitBox))
@@ -160,8 +160,8 @@ public class Level extends Canvas
     {
         int collision = 0;
         // current position
-        int posX = x / tileWidth;
-        int posY = y / tileLength;
+        int posX = x / tileHeight;
+        int posY = y / tileWidth;
         int mapX;
         int mapY;
         // next position
@@ -181,7 +181,7 @@ public class Level extends Canvas
         {
             mapY = posY;
         }
-        if ((0 <= mapX && mapX < mapLength) && (0 <= mapY && mapY < mapWidth))
+        if ((0 <= mapX && mapX < mapWidth) && (0 <= mapY && mapY < mapHeight))
         {
             // check for future collisions
             if (map[mapX][posY].collision)
@@ -198,11 +198,11 @@ public class Level extends Canvas
         else
         {
             // out of bounds
-            if (mapX >= mapLength || mapX < 0)
+            if (mapX >= mapWidth || mapX < 0)
             {
                 collision += 1;
             }
-            if (mapY >= mapWidth || mapY < 0)
+            if (mapY >= mapHeight || mapY < 0)
             {
                 collision += 2;
             }

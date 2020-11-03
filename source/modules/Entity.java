@@ -41,7 +41,7 @@ public class Entity implements Comparable<Entity>
         if (sprite == null)
         {
             g.setColor(color);
-            g.fillRect(x - offSetX, y - offSetY, width, length);
+            g.fillRect(x - offSetX, y - offSetY, length, width);
         }
         else
         {
