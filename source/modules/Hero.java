@@ -43,6 +43,15 @@ public class Hero extends Entity
         {
             dx = dxMax * direction;
             xDirection = direction;
+            // 1 = right -1 = left
+            if (direction == 1)
+            {
+                sprite = getImage("modules/SAMUS_RIGHT.png", width, height);
+            }
+            else
+            {
+                sprite = getImage("modules/SAMUS_LEFT.png", width, height);
+            }
         }
     }
 
@@ -83,6 +92,21 @@ public class Hero extends Entity
 
     public void shoot()
     {
-        bullets.add(new Projectile(x + dx, y + (height / 3), 64, 16, "modules/BULLET.png", xDirection));
+        if (xDirection == 1)
+        {
+            bullets.add(new Projectile(x + dx, y + (height / 3), 
+                    64, 16, 
+                    "modules/BULLET_RIGHT.png", xDirection
+                )
+            );
+        }
+        else
+        {
+            bullets.add(new Projectile(x + dx, y + (height / 3), 
+                    64, 16, 
+                    "modules/BULLET_LEFT.png", xDirection
+                )
+            );
+        }
     }
 }

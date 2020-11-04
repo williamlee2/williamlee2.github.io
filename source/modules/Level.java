@@ -29,8 +29,7 @@ public class Level extends Canvas
     int cameraX = 0;
     int cameraY = 0;
     boolean playing = true;
-    Image sprite;
-    Image samusSprite;
+    Image background;
 
     public Level(int width, int height)
     {        
@@ -40,6 +39,7 @@ public class Level extends Canvas
         setSize(width, height);
 
         // map tiles
+        background = Entity.getImage("modules/TEST_BACKGROUND.png", screenWidth, screenHeight);
         for (int i = 0; i < mapWidth; i++)
         {
             for (int j = 0; j < mapHeight; j++)
@@ -49,27 +49,15 @@ public class Level extends Canvas
                     // edges of map
                     map[i][j] = new Tile(i * tileWidth, j * tileHeight, 
                         tileWidth, tileHeight, 
-                        Color.LIGHT_GRAY, true
+                        background, true
                     );
-                    // map[i][j] = new Tile(i * tileWidth, j * tileHeight, 
-                    //     tileWidth, tileHeight, 
-                    //     "modules/TEST_BACKGROUND.png", 
-                    //     width, height, 
-                    //     true
-                    // );
                 }
                 else
                 {
                     map[i][j] = new Tile(i * tileWidth, j * tileHeight, 
-                        tileWidth, tileHeight, 
-                        Color.BLACK, false
+                        tileWidth, tileHeight,
+                        background, false
                     );
-                    // map[i][j] = new Tile(i * tileWidth, j * tileHeight, 
-                    //     tileWidth, tileHeight, 
-                    //     "modules/TEST_BACKGROUND.png", 
-                    //     width, height, 
-                    //     false
-                    // );
                 }
             }
         }

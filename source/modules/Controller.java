@@ -47,22 +47,22 @@ public class Controller implements KeyListener
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-            lvl.cameraX += -100;
+            lvl.cameraX += -lvl.tileWidth;
             lvl.camera.setLocation(lvl.cameraX, lvl.cameraY);
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-            lvl.cameraX += 100;
+            lvl.cameraX += lvl.tileWidth;
             lvl.camera.setLocation(lvl.cameraX, lvl.cameraY);
         }
 
         if (key == KeyEvent.VK_UP) {
-            lvl.cameraY += -100;
+            lvl.cameraY += -lvl.tileHeight;
             lvl.camera.setLocation(lvl.cameraX, lvl.cameraY);
         }
 
         if (key == KeyEvent.VK_DOWN) {
-            lvl.cameraY += 100;
+            lvl.cameraY += lvl.tileHeight;
             lvl.camera.setLocation(lvl.cameraX, lvl.cameraY);
         }
 

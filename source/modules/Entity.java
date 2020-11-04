@@ -43,12 +43,12 @@ public class Entity implements Comparable<Entity>
         hitBox = new Rectangle(x, y, width, height);
     }
 
-    public Image getImage(String fileName, int width, int height)
+    public static Image getImage(String fileName, int w, int h)
     {
-        try 
+        try
         {
             BufferedImage bufferedSprite = ImageIO.read(new File(fileName));
-            return bufferedSprite.getScaledInstance(width, height, Image.SCALE_DEFAULT);
+            return bufferedSprite.getScaledInstance(w, h, Image.SCALE_DEFAULT);
         } 
         catch (IOException e) 
         {

@@ -14,15 +14,16 @@ public class Tile extends Entity
         collision = b;
     }
 
-    public Tile(int posX, int posY, int w, int h, String spritePath, int spriteWidth, int spriteHeight, boolean b)
+    public Tile(int posX, int posY, int w, int h, Image background, boolean b)
     {
-        super(posX, posY, w, h, spritePath, spriteWidth, spriteHeight);
+        super(posX, posY, w, h, Color.BLACK);
+        sprite = background;
         collision = b;
     }
 
     public void paint(Graphics g, int offSetX, int offSetY)
     {
-        if (color == null)
+        if (sprite != null)
         {
             g.drawImage(
                 sprite, 
