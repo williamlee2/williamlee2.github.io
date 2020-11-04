@@ -15,15 +15,15 @@ public class Hero extends Entity
     boolean crouch = false;
     ArrayList<Projectile> bullets = new ArrayList<Projectile>();
 
-    public Hero(int posX, int posY, int l, int w, Color c, int g)
+    public Hero(int posX, int posY, int w, int h, Color c, int g)
     {
-        super(posX, posY, l, w, c);
+        super(posX, posY, w, h, c);
         gravity = g;
     }
 
-    public Hero(int posX, int posY, int l, int w, Image i, int g)
+    public Hero(int posX, int posY, int w, int h, String spritePath, int g)
     {
-        super(posX, posY, l, w, i);
+        super(posX, posY, w, h, spritePath, w, h);
         gravity = g;
     }
 
@@ -83,6 +83,6 @@ public class Hero extends Entity
 
     public void shoot()
     {
-        bullets.add(new Projectile(x + dx, y, 16, 16, Color.RED, xDirection));
+        bullets.add(new Projectile(x + dx, y + (height / 3), 64, 16, "modules/BULLET.png", xDirection));
     }
 }

@@ -8,15 +8,15 @@ public class Tile extends Entity
 {
     boolean collision;
 
-    public Tile(int posX, int posY, int l, int w, Color c, boolean b)
+    public Tile(int posX, int posY, int w, int h, Color c, boolean b)
     {
-        super(posX, posY, l, w, c);
+        super(posX, posY, w, h, c);
         collision = b;
     }
 
-    public Tile(int posX, int posY, int l, int w, Image i, boolean b)
+    public Tile(int posX, int posY, int w, int h, String spritePath, int spriteWidth, int spriteHeight, boolean b)
     {
-        super(posX, posY, l, w, i);
+        super(posX, posY, w, h, spritePath, spriteWidth, spriteHeight);
         collision = b;
     }
 
@@ -27,15 +27,15 @@ public class Tile extends Entity
             g.drawImage(
                 sprite, 
                 x - offSetX, y - offSetY,
-                x - offSetX + length, y - offSetY + width,
+                x - offSetX + width, y - offSetY + height,
                 x, y,
-                x + length, y + width,
+                x + width, y + height,
                 null
             );
         }
         else
         {
-            g.drawRect(x - offSetX, y - offSetY, width, length);
+            super.paint(g, offSetX, offSetY);
         }
     }
 }

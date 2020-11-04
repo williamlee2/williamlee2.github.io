@@ -8,9 +8,9 @@ public class Projectile extends Entity
     int dx = 25;
     int dy = 0;
 
-    public Projectile(int posX, int posY, int l, int w, Color c, int direction)
+    public Projectile(int posX, int posY, int w, int h, String spritePath, int direction)
     {
-        super(posX, posY, l, w, c);
+        super(posX, posY, w, h, spritePath, w, h);
         dx *= direction;
     }
 
