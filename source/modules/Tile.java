@@ -36,7 +36,8 @@ public class Tile extends Entity
         }
         else
         {
-            super.paint(g, offSetX, offSetY);
+            g.setColor(color);
+            g.drawRect(x, y, width, height);
         }
     }
 }

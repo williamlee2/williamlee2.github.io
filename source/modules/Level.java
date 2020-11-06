@@ -37,9 +37,9 @@ public class Level extends Canvas
         screenWidth = width;
         screenHeight = height;
         setSize(width, height);
+        background = Entity.getImage("modules/TEST_BACKGROUND.png", screenWidth, screenHeight);
 
         // map tiles
-        background = Entity.getImage("modules/TEST_BACKGROUND.png", screenWidth, screenHeight);
         for (int i = 0; i < mapWidth; i++)
         {
             for (int j = 0; j < mapHeight; j++)
@@ -49,14 +49,14 @@ public class Level extends Canvas
                     // edges of map
                     map[i][j] = new Tile(i * tileWidth, j * tileHeight, 
                         tileWidth, tileHeight, 
-                        background, true
+                        Color.WHITE, true
                     );
                 }
                 else
                 {
                     map[i][j] = new Tile(i * tileWidth, j * tileHeight, 
                         tileWidth, tileHeight,
-                        background, false
+                        Color.WHITE, false
                     );
                 }
             }
@@ -68,7 +68,7 @@ public class Level extends Canvas
             // random spawn locations inside map
             int x = ThreadLocalRandom.current().nextInt(1, (mapWidth - 1)) * tileWidth;
             int y = (mapHeight / 2) * tileHeight;
-            Enemy e = new Enemy(x, y, spriteWidth, spriteHeight, Color.WHITE, gravity);
+            Enemy e = new Enemy(x, y, spriteWidth, spriteHeight, Color.PINK, gravity);
             enemies.add(e);
         }
 
@@ -82,7 +82,7 @@ public class Level extends Canvas
 
     public void render(Graphics g)
     {
-        g.clearRect(0, 0, screenWidth, screenHeight);
+        g.drawImage(background, 0, 0, null);
         
         for (int i = 0; i < mapWidth; i++)
         {
@@ -241,7 +241,7 @@ public class Level extends Canvas
         {
             samus.dy = 0;
         }
-        samus.move();
+        samus.update();
 
         for (Enemy e : enemies)
         {

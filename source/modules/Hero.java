@@ -2,7 +2,10 @@ package modules;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 
 public class Hero extends Entity
 {
@@ -14,6 +17,8 @@ public class Hero extends Entity
     int gravity;
     boolean crouch = false;
     ArrayList<Projectile> bullets = new ArrayList<Projectile>();
+    Image[] sprites = new Image[4];
+    Queue<Integer> animation = new LinkedList<Integer>();
 
     public Hero(int posX, int posY, int w, int h, Color c, int g)
     {
@@ -25,6 +30,11 @@ public class Hero extends Entity
     {
         super(posX, posY, w, h, spritePath, w, h);
         gravity = g;
+        sprites[0] = getImage("modules/SAMUS_RIGHT.png", w, h);
+        sprites[1] = getImage("modules/SAMUS_LEFT.png", w, h);
+        sprites[2] = getImage("modules/SAMUS_SHOOT_RIGHT.png", 128, 128);
+        sprites[3] = getImage("modules/SAMUS_SHOOT_LEFT.png", 128, 128);
+        animation.add(0);
     }
 
     public void move(int direction, boolean yAxis)
@@ -46,11 +56,11 @@ public class Hero extends Entity
             // 1 = right -1 = left
             if (direction == 1)
             {
-                sprite = getImage("modules/SAMUS_RIGHT.png", width, height);
+                animation.add(0);
             }
             else
             {
-                sprite = getImage("modules/SAMUS_LEFT.png", width, height);
+                animation.add(1);
             }
         }
     }
@@ -78,7 +88,7 @@ public class Hero extends Entity
         
     }
 
-    public void move()
+    public void update()
     {
         x += dx;
         y += dy;
@@ -88,13 +98,25 @@ public class Hero extends Entity
         {
             dy = (dy / Math.abs(dy)) * dyMax;
         }
+
+        int index = animation.poll();
+        sprite = sprites[index];
+        if (animation.isEmpty())
+        {
+            animation.add(index);
+        }
     }
 
     public void shoot()
     {
         if (xDirection == 1)
         {
-            bullets.add(new Projectile(x + dx, y + (height / 3), 
+            for (int i = 0; i < 4; i++)
+            {
+                animation.add(2);
+            }
+            animation.add(0);
+            bullets.add(new Projectile(x + width, y + (height / 4), 
                     64, 16, 
                     "modules/BULLET_RIGHT.png", xDirection
                 )
@@ -102,7 +124,12 @@ public class Hero extends Entity
         }
         else
         {
-            bullets.add(new Projectile(x + dx, y + (height / 3), 
+            for (int i = 0; i < 4; i++)
+            {
+                animation.add(3);
+            }
+            animation.add(1);
+            bullets.add(new Projectile(x, y + (height / 4), 
                     64, 16, 
                     "modules/BULLET_LEFT.png", xDirection
                 )
