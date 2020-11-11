@@ -1,6 +1,7 @@
 package modules;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Enemy extends Entity
@@ -18,10 +19,18 @@ public class Enemy extends Entity
         super(posX, posY, l, w, c);
         gravity = g;
         direction = ThreadLocalRandom.current().nextInt(2);
+        // 1 = right -1 = left
         if (direction == 0)
         {
             direction = -1;
         }
+    }
+
+    public void paint(Graphics g, int offSetX, int offSetY)
+    {
+        super.paint(g, offSetX, offSetY);
+        g.setColor(Color.WHITE);
+        g.drawString(String.valueOf(health), x + (width / 3), y);
     }
 
     public void move()
@@ -48,6 +57,7 @@ public class Enemy extends Entity
         }
         else
         {
+            // continue same direction
             dx = dxMax * direction;
         }
     }

@@ -152,18 +152,28 @@ public class Level extends Canvas
         {
             if (axis == 0)
             {
-                // vertical collision
-                if (map[ap][p].collision || map[ap][pd].collision)
+                // collision above
+                if (map[ap][p].collision)
                 {
                     return 1;
+                }
+                // collision below
+                else if (map[ap][pd].collision)
+                {
+                    return 2;
                 }
             }
             else
             {
-                // horizontal collision
-                if (map[p][ap].collision || map[pd][ap].collision)
+                // collision left
+                if (map[p][ap].collision)
                 {
-                    return 1;
+                    return 3;
+                }
+                // collision right
+                else if (map[pd][ap].collision)
+                {
+                    return 4;
                 }
             }
             return 0; // no collision
@@ -233,30 +243,63 @@ public class Level extends Canvas
         collision = checkCollision(samus.x, samus.width, samus.dx, 1, samus.y);
         if (collision != 0)
         {
-            samus.dx = 0;
+            if (collision == -1)
+            {
+                samus.dx = 0;
+            }
+            else if (collision == 1)
+            {
+                samus.dx = tileWidth - (samus.x % tileWidth);
+            }
+            else if (collision == 2)
+            {
+                samus.dx = tileWidth - ((samus.x + samus.width) % tileWidth);
+            }
         }
         // check vertical collision
         collision = checkCollision(samus.y, samus.height, samus.dy, 0, samus.x);
         if (collision != 0)
         {
-            samus.dy = 0;
+            if (collision == -1)
+            {
+                samus.dy = 0;
+            }
+            else if (collision == 1)
+            {
+                samus.dy = tileHeight - (samus.y % tileHeight);
+            }
+            else if (collision == 2)
+            {
+                samus.dy = tileHeight - ((samus.y + samus.height) % tileHeight);
+            }
         }
+        samus.grounded = map[samus.x / tileWidth][(samus.y + samus.height) / tileHeight].collision;
         samus.update();
 
-        for (Enemy e : enemies)
+        if (enemies.isEmpty())
         {
-            collision = checkCollision(e.x, e.width, e.dx, 1, e.y);
-            if (collision != 0)
+            int x = ThreadLocalRandom.current().nextInt(1, (mapWidth - 1)) * tileWidth;
+            Enemy e = new Enemy(x, (mapHeight / 2) * tileHeight, spriteWidth, spriteHeight, Color.PINK, gravity);
+            enemies.add(e);
+        }
+        else
+        {
+            for (Enemy e : enemies)
             {
-                e.dx = 0;
+                // check horizontal collision
+                collision = checkCollision(e.x, e.width, e.dx, 1, e.y);
+                if (collision != 0)
+                {
+                    e.dx = 0;
+                }
+                // check vertical collision
+                collision = checkCollision(e.y, e.height, e.dy, 0, e.x);
+                if (collision != 0)
+                {
+                    e.dy = 0;
+                }
+                e.move();
             }
-            // check vertical collision
-            collision = checkCollision(e.y, e.height, e.dy, 0, e.x);
-            if (collision != 0)
-            {
-                e.dy = 0;
-            }
-            e.move();
         }
     }
 

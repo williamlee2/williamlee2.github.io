@@ -15,8 +15,8 @@ public class Entity implements Comparable<Entity>
     int y = 0;
     int height = 0;
     int width = 0;
-    Color color = null;
     Rectangle hitBox;
+    Color color = null;
     Image sprite = null;
 
     public Entity(int posX, int posY, int w, int h, Color c)
@@ -45,6 +45,7 @@ public class Entity implements Comparable<Entity>
 
     public static Image getImage(String fileName, int w, int h)
     {
+        // get image from file
         try
         {
             BufferedImage bufferedSprite = ImageIO.read(new File(fileName));
@@ -52,7 +53,8 @@ public class Entity implements Comparable<Entity>
         } 
         catch (IOException e) 
         {
-            System.out.println("Failed to load background");
+            System.out.println("Failed to load image " + fileName);
+            e.printStackTrace();
             return null;
         }
     }
@@ -72,6 +74,7 @@ public class Entity implements Comparable<Entity>
 
     public int compareTo(Entity e) 
     {
+        // used for sorting enemies for projectile collisions
         return this.x.compareTo(e.x);
     }
 }

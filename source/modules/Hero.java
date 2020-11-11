@@ -15,9 +15,12 @@ public class Hero extends Entity
     int dyMax = 25;
     int xDirection = 1;
     int gravity;
+    boolean grounded = false;
+    int health = 100;
+    int frameCount = 0;
     boolean crouch = false;
     ArrayList<Projectile> bullets = new ArrayList<Projectile>();
-    Image[] sprites = new Image[4];
+    Image[] sprites = new Image[12];
     Queue<Integer> animation = new LinkedList<Integer>();
 
     public Hero(int posX, int posY, int w, int h, Color c, int g)
@@ -32,9 +35,24 @@ public class Hero extends Entity
         gravity = g;
         sprites[0] = getImage("modules/SAMUS_RIGHT.png", w, h);
         sprites[1] = getImage("modules/SAMUS_LEFT.png", w, h);
-        sprites[2] = getImage("modules/SAMUS_SHOOT_RIGHT.png", 128, 128);
-        sprites[3] = getImage("modules/SAMUS_SHOOT_LEFT.png", 128, 128);
+        sprites[2] = getImage("modules/SAMUS_SHOOT_RIGHT_1.png", 64, 128);
+        sprites[3] = getImage("modules/SAMUS_SHOOT_RIGHT_2.png", 128, 128);
+        sprites[4] = getImage("modules/SAMUS_SHOOT_RIGHT_3.png", 128, 128);
+        sprites[5] = getImage("modules/SAMUS_SHOOT_LEFT_1.png", 64, 128);
+        sprites[6] = getImage("modules/SAMUS_SHOOT_LEFT_2.png", 128, 128);
+        sprites[7] = getImage("modules/SAMUS_SHOOT_LEFT_3.png", 128, 128);
+        sprites[8] = getImage("modules/SAMUS_CROUCH_RIGHT_1.png", 64, 96);
+        sprites[9] = getImage("modules/SAMUS_CROUCH_RIGHT_2.png", 64, 64);
+        sprites[10] = getImage("modules/SAMUS_CROUCH_LEFT_1.png", 64, 96);
+        sprites[11] = getImage("modules/SAMUS_CROUCH_LEFT_2.png", 64, 64);
         animation.add(0);
+    }
+
+    public void paint(Graphics g, int offSetX, int offSetY)
+    {
+        super.paint(g, offSetX, offSetY);
+        g.setColor(Color.WHITE);
+        g.drawString(String.valueOf(health), x + (width / 3), y);
     }
 
     public void move(int direction, boolean yAxis)
@@ -42,8 +60,8 @@ public class Hero extends Entity
         // vertical
         if (yAxis)
         {
-            // only jump if at rest
-            if (dy == gravity)
+            // only jump if on top of ground
+            if (grounded)
             {
                 dy = dxMax * direction;
             }
@@ -75,12 +93,52 @@ public class Hero extends Entity
 
     public void startCrouch()
     {
-        crouch = true;
+        if (grounded)
+        {
+            if (crouch == false)
+            {
+                if (xDirection == 1)
+                {
+                    // crouch right
+                    animation.add(8);
+                }
+                else
+                {
+                    // crouch left
+                    animation.add(10);
+                }
+                // add frame 1
+            }
+            // add frame 2
+            if (xDirection == 1)
+            {
+                // crouch right
+                animation.add(9);
+            }
+            else
+            {
+                // crouch left
+                animation.add(11);
+            }
+            crouch = true;
+        }
     }
 
     public void endCrouch()
     {
-        crouch = false;
+        if (crouch)
+        {
+            // add idle frame
+            crouch = false;
+            if (xDirection == 1)
+            {
+                animation.add(0);
+            }
+            else
+            {
+                animation.add(1);
+            }
+        }
     }
 
     public void swapWeapon()
@@ -92,6 +150,7 @@ public class Hero extends Entity
     {
         x += dx;
         y += dy;
+        // need to update hitbox size based on animation
         hitBox.setLocation(x, y);
         dy += gravity;
         if (Math.abs(dy) > Math.abs(dyMax))
@@ -99,11 +158,19 @@ public class Hero extends Entity
             dy = (dy / Math.abs(dy)) * dyMax;
         }
 
-        int index = animation.poll();
-        sprite = sprites[index];
-        if (animation.isEmpty())
+        if (frameCount == 1)
         {
-            animation.add(index);
+            int index = animation.poll();
+            sprite = sprites[index];
+            frameCount = 0;
+            if (animation.isEmpty())
+            {
+                animation.add(index);
+            }
+        }
+        else
+        {
+            frameCount++;
         }
     }
 
@@ -111,10 +178,9 @@ public class Hero extends Entity
     {
         if (xDirection == 1)
         {
-            for (int i = 0; i < 4; i++)
-            {
-                animation.add(2);
-            }
+            animation.add(2);
+            animation.add(3);
+            animation.add(4);
             animation.add(0);
             bullets.add(new Projectile(x + width, y + (height / 4), 
                     64, 16, 
@@ -124,10 +190,9 @@ public class Hero extends Entity
         }
         else
         {
-            for (int i = 0; i < 4; i++)
-            {
-                animation.add(3);
-            }
+            animation.add(5);
+            animation.add(6);
+            animation.add(7);
             animation.add(1);
             bullets.add(new Projectile(x, y + (height / 4), 
                     64, 16, 

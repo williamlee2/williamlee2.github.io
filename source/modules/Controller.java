@@ -82,7 +82,6 @@ public class Controller implements KeyListener
             lvl.samus.move(1, false);
         }
 
-        // change to trigger on mouse left click
         if (key == KeyEvent.VK_K)
         {
             lvl.samus.shoot();

@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public class Projectile extends Entity
 {
-    int damage = 100;
+    int damage = 50;
     int dx = 25;
     int dy = 0;
 
