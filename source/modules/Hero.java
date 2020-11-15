@@ -1,7 +1,6 @@
 package modules;
 
 import java.awt.Color;
-import java.awt.Image;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Queue;
@@ -11,17 +10,16 @@ public class Hero extends Entity
 {
     int dx = 0;
     int dy = 0;
-    int dxMax = 25;
-    int dyMax = 25;
+    int dxMax = 15;
+    int dyMax = 50;
     int xDirection = 1;
     int gravity;
     boolean grounded = false;
     int health = 100;
-    int frameCount = 0;
     boolean crouch = false;
     ArrayList<Projectile> bullets = new ArrayList<Projectile>();
-    Image[] sprites = new Image[12];
-    Queue<Integer> animation = new LinkedList<Integer>();
+    Animation[] animations = new Animation[7];
+    int animationSelect = 0;
 
     public Hero(int posX, int posY, int w, int h, Color c, int g)
     {
@@ -29,28 +27,35 @@ public class Hero extends Entity
         gravity = g;
     }
 
-    public Hero(int posX, int posY, int w, int h, String spritePath, int g)
+    public Hero(int posX, int posY, int w, int h, int g)
     {
-        super(posX, posY, w, h, spritePath, w, h);
+        super(posX, posY, w, h, null);
         gravity = g;
-        sprites[0] = getImage("modules/SAMUS_RIGHT.png", w, h);
-        sprites[1] = getImage("modules/SAMUS_LEFT.png", w, h);
-        sprites[2] = getImage("modules/SAMUS_SHOOT_RIGHT_1.png", 64, 128);
-        sprites[3] = getImage("modules/SAMUS_SHOOT_RIGHT_2.png", 128, 128);
-        sprites[4] = getImage("modules/SAMUS_SHOOT_RIGHT_3.png", 128, 128);
-        sprites[5] = getImage("modules/SAMUS_SHOOT_LEFT_1.png", 64, 128);
-        sprites[6] = getImage("modules/SAMUS_SHOOT_LEFT_2.png", 128, 128);
-        sprites[7] = getImage("modules/SAMUS_SHOOT_LEFT_3.png", 128, 128);
-        sprites[8] = getImage("modules/SAMUS_CROUCH_RIGHT_1.png", 64, 96);
-        sprites[9] = getImage("modules/SAMUS_CROUCH_RIGHT_2.png", 64, 64);
-        sprites[10] = getImage("modules/SAMUS_CROUCH_LEFT_1.png", 64, 96);
-        sprites[11] = getImage("modules/SAMUS_CROUCH_LEFT_2.png", 64, 64);
-        animation.add(0);
+        animations[0] = new Animation(getImage("sprites/SAMUS_IDLE.png", 3 * w, h), w, h, 3, true);
+        animations[1] = new Animation(getImage("sprites/SAMUS_RUN.png", 8 * w, h), w, h, 8, true);
+        animations[2] = new Animation(getImage("sprites/SAMUS_CROUCH.png", 2 * w, h / 2), w, h / 2, 2, false);
+        animations[3] = new Animation(getImage("sprites/SAMUS_JUMP.png", 5 * w, h / 2), w, h / 2, 5, false);
+        animations[4] = new Animation(getImage("sprites/SAMUS_SHOOT.png", 3 * w, h), w, h, 3, false);
+        animations[5] = new Animation(getImage("sprites/SAMUS_WHIP.png", 9 * w, h), w, h, 9, false);
+        animations[6] = new Animation(getImage("sprites/SAMUS_HIT.png", 8 * w, h), w, h, 8, false);
     }
 
     public void paint(Graphics g, int offSetX, int offSetY)
     {
-        super.paint(g, offSetX, offSetY);
+        if (color != null)
+        {
+            g.setColor(color);
+            g.fillRect(x - offSetX, y - offSetY, width, height);
+        }
+        else
+        {
+            if (!animations[animationSelect].render(g, x, y, xDirection))
+            {
+                animations[animationSelect].index = 0;
+                animationSelect = 0;
+                animations[animationSelect].render(g, x, y, xDirection);
+            }
+        }
         g.setColor(Color.WHITE);
         g.drawString(String.valueOf(health), x + (width / 3), y);
     }
@@ -63,6 +68,8 @@ public class Hero extends Entity
             // only jump if on top of ground
             if (grounded)
             {
+                animations[animationSelect].index = 0;
+                animationSelect = 3;
                 dy = dxMax * direction;
             }
         }
@@ -71,22 +78,17 @@ public class Hero extends Entity
         {
             dx = dxMax * direction;
             xDirection = direction;
-            // 1 = right -1 = left
-            if (direction == 1)
-            {
-                animation.add(0);
-            }
-            else
-            {
-                animation.add(1);
-            }
+            animations[animationSelect].index = 0;
+            animationSelect = 1; // run
         }
     }
 
-    public void endMove(int direction)
+    public void endMove(int axis)
     {
-        if (direction == 1)
+        if (axis == 1)
         {
+            animations[animationSelect].index = 0;
+            animationSelect = 0; // idle
             dx = 0;
         }
     }
@@ -95,50 +97,18 @@ public class Hero extends Entity
     {
         if (grounded)
         {
-            if (crouch == false)
+            if (animationSelect != 2)
             {
-                if (xDirection == 1)
-                {
-                    // crouch right
-                    animation.add(8);
-                }
-                else
-                {
-                    // crouch left
-                    animation.add(10);
-                }
-                // add frame 1
+                animations[animationSelect].index = 0;
+                animationSelect = 2; //crouch
             }
-            // add frame 2
-            if (xDirection == 1)
-            {
-                // crouch right
-                animation.add(9);
-            }
-            else
-            {
-                // crouch left
-                animation.add(11);
-            }
-            crouch = true;
         }
     }
 
     public void endCrouch()
     {
-        if (crouch)
-        {
-            // add idle frame
-            crouch = false;
-            if (xDirection == 1)
-            {
-                animation.add(0);
-            }
-            else
-            {
-                animation.add(1);
-            }
-        }
+        animations[2].index = 0;
+        animationSelect = 0;
     }
 
     public void swapWeapon()
@@ -157,46 +127,25 @@ public class Hero extends Entity
         {
             dy = (dy / Math.abs(dy)) * dyMax;
         }
-
-        if (frameCount == 1)
-        {
-            int index = animation.poll();
-            sprite = sprites[index];
-            frameCount = 0;
-            if (animation.isEmpty())
-            {
-                animation.add(index);
-            }
-        }
-        else
-        {
-            frameCount++;
-        }
     }
 
     public void shoot()
     {
+        animations[animationSelect].index = 0; // reset previous animation
+        animationSelect = 4; // shoot
         if (xDirection == 1)
         {
-            animation.add(2);
-            animation.add(3);
-            animation.add(4);
-            animation.add(0);
             bullets.add(new Projectile(x + width, y + (height / 4), 
                     64, 16, 
-                    "modules/BULLET_RIGHT.png", xDirection
+                    "sprites/BULLET.png", xDirection
                 )
             );
         }
         else
         {
-            animation.add(5);
-            animation.add(6);
-            animation.add(7);
-            animation.add(1);
             bullets.add(new Projectile(x, y + (height / 4), 
                     64, 16, 
-                    "modules/BULLET_LEFT.png", xDirection
+                    "sprites/BULLET.png", xDirection
                 )
             );
         }

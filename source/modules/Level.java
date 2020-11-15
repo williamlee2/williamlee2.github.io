@@ -37,7 +37,7 @@ public class Level extends Canvas
         screenWidth = width;
         screenHeight = height;
         setSize(width, height);
-        background = Entity.getImage("modules/TEST_BACKGROUND.png", screenWidth, screenHeight);
+        background = Entity.getImage("sprites/TEST_BACKGROUND.png", screenWidth, screenHeight);
 
         // map tiles
         for (int i = 0; i < mapWidth; i++)
@@ -74,8 +74,7 @@ public class Level extends Canvas
 
         samus = new Hero(
             (mapWidth / 2) * tileWidth, (mapHeight / 2) * tileHeight, 
-            spriteWidth, spriteHeight, 
-            "modules/SAMUS_RIGHT.png", gravity
+            spriteWidth, spriteHeight, gravity
         );
         
     }
