@@ -90,7 +90,7 @@ public class Level extends Canvas
                 // only render visible tiles
                 if (camera.contains(map[i][j].hitBox))
                 {
-                    map[i][j].paint(g, cameraX, cameraY);
+                    map[i][j].render(g, cameraX, cameraY);
                 }
             }
         }
@@ -100,21 +100,21 @@ public class Level extends Canvas
         {
             if (camera.contains(e.hitBox))
             {
-                e.paint(g, cameraX, cameraY);
+                e.render(g, cameraX, cameraY);
             }
         }
 
         // samus should always be visible...
         if (camera.contains(samus.hitBox))
         {
-            samus.paint(g, cameraX, cameraY);
+            samus.render(g, cameraX, cameraY);
         }
 
         for (Projectile p: samus.bullets)
         {
             if (camera.contains(p.hitBox))
             {
-                p.paint(g, cameraX, cameraY);
+                p.render(g, cameraX, cameraY);
             }   
         }
     }

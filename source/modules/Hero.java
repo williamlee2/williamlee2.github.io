@@ -31,16 +31,16 @@ public class Hero extends Entity
     {
         super(posX, posY, w, h, null);
         gravity = g;
-        animations[0] = new Animation(getImage("sprites/SAMUS_IDLE.png", 3 * w, h), w, h, 3, true);
-        animations[1] = new Animation(getImage("sprites/SAMUS_RUN.png", 8 * w, h), w, h, 8, true);
-        animations[2] = new Animation(getImage("sprites/SAMUS_CROUCH.png", 2 * w, h / 2), w, h / 2, 2, false);
-        animations[3] = new Animation(getImage("sprites/SAMUS_JUMP.png", 5 * w, h / 2), w, h / 2, 5, false);
-        animations[4] = new Animation(getImage("sprites/SAMUS_SHOOT.png", 3 * w, h), w, h, 3, false);
-        animations[5] = new Animation(getImage("sprites/SAMUS_WHIP.png", 9 * w, h), w, h, 9, false);
-        animations[6] = new Animation(getImage("sprites/SAMUS_HIT.png", 8 * w, h), w, h, 8, false);
+        animations[0] = new Animation(getImage("sprites/SAMUS_IDLE.png", 3 * w, h), w, h, 3, 30, true);
+        animations[1] = new Animation(getImage("sprites/SAMUS_RUN.png", 8 * w, h), w, h, 8, 2, true);
+        animations[2] = new Animation(getImage("sprites/SAMUS_CROUCH.png", 2 * w, h / 2), w, h / 2, 2, 2, false);
+        animations[3] = new Animation(getImage("sprites/SAMUS_JUMP.png", 5 * w, h / 2), w, h / 2, 5, 2, false);
+        animations[4] = new Animation(getImage("sprites/SAMUS_SHOOT.png", 3 * w, h), w, h, 3, 2, false);
+        animations[5] = new Animation(getImage("sprites/SAMUS_WHIP.png", 9 * w, h), w, h, 9, 2, false);
+        animations[6] = new Animation(getImage("sprites/SAMUS_HIT.png", 8 * w, h), w, h, 8, 2, false);
     }
 
-    public void paint(Graphics g, int offSetX, int offSetY)
+    public void render(Graphics g, int offSetX, int offSetY)
     {
         if (color != null)
         {

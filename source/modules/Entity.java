@@ -59,7 +59,7 @@ public class Entity implements Comparable<Entity>
         }
     }
 
-    public void paint(Graphics g, int offSetX, int offSetY)
+    public void render(Graphics g, int offSetX, int offSetY)
     {
         if (sprite == null)
         {

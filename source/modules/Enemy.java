@@ -26,9 +26,9 @@ public class Enemy extends Entity
         }
     }
 
-    public void paint(Graphics g, int offSetX, int offSetY)
+    public void render(Graphics g, int offSetX, int offSetY)
     {
-        super.paint(g, offSetX, offSetY);
+        super.render(g, offSetX, offSetY);
         g.setColor(Color.WHITE);
         g.drawString(String.valueOf(health), x + (width / 3), y);
     }

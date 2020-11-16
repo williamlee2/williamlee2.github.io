@@ -9,21 +9,23 @@ public class Animation
     int frameWidth;
     int frameHeight;
     int frameCount;
+    int frameDuration;
     boolean looped;
     int index = 0;
 
-    public Animation(Image spriteSheet, int w, int h, int fc, boolean l)
+    public Animation(Image spriteSheet, int w, int h, int fc, int fd, boolean l)
     {
         sprites = spriteSheet;
         frameWidth = w;
         frameHeight = h;
         frameCount = fc;
+        frameDuration = fd;
         looped = l;
     }
 
     public boolean render(Graphics g, int x, int y, int direction)
     {
-        if (index + 1 >= frameCount)
+        if ((index / frameDuration) + 1 >= frameCount)
         {
             if (looped)
             {
@@ -40,8 +42,8 @@ public class Animation
                 sprites, 
                 x, y, 
                 x + frameWidth, y + frameHeight, 
-                index * frameWidth, 0, 
-                (index + 1) * frameWidth, frameHeight, 
+                (index / frameDuration) * frameWidth, 0, 
+                ((index / frameDuration) + 1) * frameWidth, frameHeight, 
                 null
             );
             index++;
@@ -53,8 +55,8 @@ public class Animation
                 sprites, 
                 x + frameWidth, y,
                 x - frameWidth, y + frameHeight, 
-                index * frameWidth, 0,
-                (index + 1) * frameWidth, frameHeight, 
+                (index / frameDuration) * frameWidth, 0,
+                ((index / frameDuration) + 1) * frameWidth, frameHeight, 
                 null
             );
             index++;

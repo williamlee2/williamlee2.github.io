@@ -21,7 +21,7 @@ public class Tile extends Entity
         collision = b;
     }
 
-    public void paint(Graphics g, int offSetX, int offSetY)
+    public void render(Graphics g, int offSetX, int offSetY)
     {
         if (sprite != null)
         {

@@ -1,6 +1,7 @@
 package modules;
 
 import java.awt.Color;
+import java.awt.Graphics;
 
 public class Projectile extends Entity
 {
@@ -18,5 +19,17 @@ public class Projectile extends Entity
     {
         x += dx;
         hitBox.setLocation(x, y);
+    }
+
+    public void render(Graphics g, int offSetX, int offSetY)
+    {
+        if (dx > 0)
+        {
+            g.drawImage(sprite, x, y, width, height, null);
+        }
+        else
+        {
+            g.drawImage(sprite, x + width, y, -width, height, null);
+        }
     }
 }
