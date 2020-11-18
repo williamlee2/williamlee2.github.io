@@ -63,12 +63,12 @@ public class Level extends Canvas
         }
 
         // monsters on map
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 3; i++)
         {
             // random spawn locations inside map
             int x = ThreadLocalRandom.current().nextInt(1, (mapWidth - 1)) * tileWidth;
             int y = (mapHeight / 2) * tileHeight;
-            Enemy e = new Enemy(x, y, spriteWidth, spriteHeight, Color.PINK, gravity);
+            Enemy e = new Enemy(x, y, spriteWidth, spriteHeight, gravity);
             enemies.add(e);
         }
 
@@ -278,7 +278,7 @@ public class Level extends Canvas
         if (enemies.isEmpty())
         {
             int x = ThreadLocalRandom.current().nextInt(1, (mapWidth - 1)) * tileWidth;
-            Enemy e = new Enemy(x, (mapHeight / 2) * tileHeight, spriteWidth, spriteHeight, Color.PINK, gravity);
+            Enemy e = new Enemy(x, (mapHeight / 2) * tileHeight, spriteWidth, spriteHeight, gravity);
             enemies.add(e);
         }
         else

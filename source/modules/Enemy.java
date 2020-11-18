@@ -14,9 +14,9 @@ public class Enemy extends Entity
     int dyMax = 25;
     int health = 100;
 
-    public Enemy(int posX, int posY, int l, int w, Color c, int g)
+    public Enemy(int posX, int posY, int l, int w, int g)
     {
-        super(posX, posY, l, w, c);
+        super(posX, posY, l, w, Color.GREEN);
         gravity = g;
         direction = ThreadLocalRandom.current().nextInt(2);
         // 1 = right -1 = left
@@ -65,5 +65,17 @@ public class Enemy extends Entity
     public void hit(int damage)
     {
         health -= damage;
+        if (health < 75 && health >= 50)
+        {
+            color = Color.BLUE;
+        }
+        else if (health < 50 && health >= 25)
+        {
+            color = Color.ORANGE;
+        }
+        else if (health < 25)
+        {
+            color = Color.RED;
+        }
     }
 }

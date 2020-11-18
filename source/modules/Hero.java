@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Queue;
+
+import modules.Animation;
+
 import java.util.LinkedList;
 
 public class Hero extends Entity
@@ -19,7 +22,14 @@ public class Hero extends Entity
     boolean crouch = false;
     ArrayList<Projectile> bullets = new ArrayList<Projectile>();
     Animation[] animations = new Animation[7];
-    int animationSelect = 0;
+    final int idleState = 0;
+    final int runState = 1;
+    final int crouchState = 2;
+    final int jumpState = 3;
+    final int shootState = 4;
+    final int whipState = 5;
+    final int hitState = 6;
+    int animationSelect = idleState;
 
     public Hero(int posX, int posY, int w, int h, Color c, int g)
     {
@@ -31,13 +41,13 @@ public class Hero extends Entity
     {
         super(posX, posY, w, h, null);
         gravity = g;
-        animations[0] = new Animation(getImage("sprites/SAMUS_IDLE.png", 3 * w, h), w, h, 3, 30, true);
-        animations[1] = new Animation(getImage("sprites/SAMUS_RUN.png", 8 * w, h), w, h, 8, 2, true);
-        animations[2] = new Animation(getImage("sprites/SAMUS_CROUCH.png", 2 * w, h / 2), w, h / 2, 2, 2, false);
-        animations[3] = new Animation(getImage("sprites/SAMUS_JUMP.png", 5 * w, h / 2), w, h / 2, 5, 2, false);
-        animations[4] = new Animation(getImage("sprites/SAMUS_SHOOT.png", 3 * w, h), w, h, 3, 2, false);
-        animations[5] = new Animation(getImage("sprites/SAMUS_WHIP.png", 9 * w, h), w, h, 9, 2, false);
-        animations[6] = new Animation(getImage("sprites/SAMUS_HIT.png", 8 * w, h), w, h, 8, 2, false);
+        animations[idleState] = new Animation(getImage("sprites/SAMUS_IDLE.png", 3 * Animation.frameWidth, Animation.frameHeight), 3, 30, true);
+        animations[runState] = new Animation(getImage("sprites/SAMUS_RUN.png", 8 * Animation.frameWidth, Animation.frameHeight), 8, 2, true);
+        animations[crouchState] = new Animation(getImage("sprites/SAMUS_CROUCH.png", 2 * Animation.frameWidth, Animation.frameHeight), 2, 2, false);
+        animations[jumpState] = new Animation(getImage("sprites/SAMUS_JUMP.png", 5 * Animation.frameWidth, Animation.frameHeight), 5, 2, false);
+        animations[shootState] = new Animation(getImage("sprites/SAMUS_SHOOT.png", 3 * Animation.frameWidth, Animation.frameHeight), 3, 2, false);
+        animations[whipState] = new Animation(getImage("sprites/SAMUS_WHIP.png", 9 * Animation.frameWidth, Animation.frameHeight), 9, 2, false);
+        animations[hitState] = new Animation(getImage("sprites/SAMUS_HIT.png", 8 * Animation.frameWidth, Animation.frameHeight), 8, 2, false);
     }
 
     public void render(Graphics g, int offSetX, int offSetY)
@@ -52,12 +62,13 @@ public class Hero extends Entity
             if (!animations[animationSelect].render(g, x, y, xDirection))
             {
                 animations[animationSelect].index = 0;
-                animationSelect = 0;
+                animationSelect = idleState;
                 animations[animationSelect].render(g, x, y, xDirection);
             }
         }
         g.setColor(Color.WHITE);
         g.drawString(String.valueOf(health), x + (width / 3), y);
+        g.drawRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
     }
 
     public void move(int direction, boolean yAxis)
@@ -69,8 +80,8 @@ public class Hero extends Entity
             if (grounded)
             {
                 animations[animationSelect].index = 0;
-                animationSelect = 3;
-                dy = dxMax * direction;
+                animationSelect = jumpState;
+                dy = dyMax * direction;
             }
         }
         // horizontal
@@ -78,8 +89,11 @@ public class Hero extends Entity
         {
             dx = dxMax * direction;
             xDirection = direction;
-            animations[animationSelect].index = 0;
-            animationSelect = 1; // run
+            if (animationSelect != 1)
+            {
+                animations[animationSelect].index = 0;
+                animationSelect = runState; 
+            }
         }
     }
 
@@ -88,7 +102,7 @@ public class Hero extends Entity
         if (axis == 1)
         {
             animations[animationSelect].index = 0;
-            animationSelect = 0; // idle
+            animationSelect = idleState;
             dx = 0;
         }
     }
@@ -100,7 +114,11 @@ public class Hero extends Entity
             if (animationSelect != 2)
             {
                 animations[animationSelect].index = 0;
-                animationSelect = 2; //crouch
+                animationSelect = crouchState;
+            }
+            else
+            {
+                animations[animationSelect].index = animations[animationSelect].frameDuration;
             }
         }
     }
@@ -108,7 +126,7 @@ public class Hero extends Entity
     public void endCrouch()
     {
         animations[2].index = 0;
-        animationSelect = 0;
+        animationSelect = idleState;
     }
 
     public void swapWeapon()
@@ -132,7 +150,7 @@ public class Hero extends Entity
     public void shoot()
     {
         animations[animationSelect].index = 0; // reset previous animation
-        animationSelect = 4; // shoot
+        animationSelect = shootState;
         if (xDirection == 1)
         {
             bullets.add(new Projectile(x + width, y + (height / 4), 

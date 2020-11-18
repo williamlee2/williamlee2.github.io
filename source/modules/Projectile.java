@@ -2,10 +2,11 @@ package modules;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Projectile extends Entity
 {
-    int damage = 50;
+    int damage;
     int dx = 25;
     int dy = 0;
 
@@ -13,6 +14,7 @@ public class Projectile extends Entity
     {
         super(posX, posY, w, h, spritePath, w, h);
         dx *= direction;
+        damage = ThreadLocalRandom.current().nextInt(25, 101);
     }
 
     public void move()
