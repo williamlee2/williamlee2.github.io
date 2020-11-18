@@ -4,9 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Queue;
-
-import modules.Animation;
-
 import java.util.LinkedList;
 
 public class Hero extends Entity
@@ -67,7 +64,14 @@ public class Hero extends Entity
             }
         }
         g.setColor(Color.WHITE);
-        g.drawString(String.valueOf(health), x + (width / 3), y);
+        if (xDirection == 1)
+        {
+            g.drawString(String.valueOf(health), x + (width / 3), y);
+        }
+        else
+        {
+            g.drawString(String.valueOf(health), x - (2 * width / 3), y);
+        }
         g.drawRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
     }
 
@@ -139,7 +143,14 @@ public class Hero extends Entity
         x += dx;
         y += dy;
         // need to update hitbox size based on animation
-        hitBox.setLocation(x, y);
+        if (xDirection == 1)
+        {
+            hitBox.setLocation(x, y);
+        }
+        else
+        {
+            hitBox.setLocation(x - width, y);
+        }
         dy += gravity;
         if (Math.abs(dy) > Math.abs(dyMax))
         {
