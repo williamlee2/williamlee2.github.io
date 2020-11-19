@@ -289,13 +289,35 @@ public class Level extends Canvas
                 collision = checkCollision(e.x, e.width, e.dx, 1, e.y);
                 if (collision != 0)
                 {
-                    e.dx = 0;
+                    if (collision == -1)
+                    {
+                        e.dx = 0;
+                    }
+                    else if (collision == 1)
+                    {
+                        e.dx = tileWidth - (e.x % tileWidth);
+                    }
+                    else if (collision == 2)
+                    {
+                        e.dx = tileWidth - ((e.x + e.width) % tileWidth);
+                    }
                 }
                 // check vertical collision
                 collision = checkCollision(e.y, e.height, e.dy, 0, e.x);
                 if (collision != 0)
                 {
-                    e.dy = 0;
+                    if (collision == -1)
+                    {   
+                        e.dy = 0;
+                    }
+                    else if (collision == 1)
+                    {
+                        e.dy = tileHeight - (e.y % tileHeight);
+                    }
+                    else if (collision == 2)
+                    {
+                        e.dy = tileHeight - ((e.y + e.height) % tileHeight);
+                    }
                 }
                 e.move();
             }

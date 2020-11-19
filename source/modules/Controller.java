@@ -25,19 +25,23 @@ public class Controller implements KeyListener
     {
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_A) {
+        if (key == KeyEvent.VK_A) 
+        {
             lvl.samus.endMove(1);
         }
 
-        if (key == KeyEvent.VK_D) {
+        if (key == KeyEvent.VK_D) 
+        {
             lvl.samus.endMove(1);
         }
 
-        if (key == KeyEvent.VK_S) {
+        if (key == KeyEvent.VK_S) 
+        {
             lvl.samus.endCrouch();
         }
 
-        if (key == KeyEvent.VK_W) {
+        if (key == KeyEvent.VK_W) 
+        {
             lvl.samus.swapWeapon();
         }
     }
@@ -46,45 +50,58 @@ public class Controller implements KeyListener
     {
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_LEFT) {
+        if (key == KeyEvent.VK_LEFT) 
+        {
             lvl.cameraX += -lvl.tileWidth;
             lvl.camera.setLocation(lvl.cameraX, lvl.cameraY);
         }
 
-        if (key == KeyEvent.VK_RIGHT) {
+        if (key == KeyEvent.VK_RIGHT) 
+        {
             lvl.cameraX += lvl.tileWidth;
             lvl.camera.setLocation(lvl.cameraX, lvl.cameraY);
         }
 
-        if (key == KeyEvent.VK_UP) {
+        if (key == KeyEvent.VK_UP) 
+        {
             lvl.cameraY += -lvl.tileHeight;
             lvl.camera.setLocation(lvl.cameraX, lvl.cameraY);
         }
 
-        if (key == KeyEvent.VK_DOWN) {
+        if (key == KeyEvent.VK_DOWN) 
+        {
             lvl.cameraY += lvl.tileHeight;
             lvl.camera.setLocation(lvl.cameraX, lvl.cameraY);
         }
 
-        if (key == KeyEvent.VK_SPACE) {
+        if (key == KeyEvent.VK_SPACE) 
+        {
             lvl.samus.move(-1, true);
         }
 
-        if (key == KeyEvent.VK_A) {
+        if (key == KeyEvent.VK_A) 
+        {
             lvl.samus.move(-1, false);
         }
 
-        if (key == KeyEvent.VK_S) {
+        if (key == KeyEvent.VK_S) 
+        {
             lvl.samus.startCrouch();
         }
 
-        if (key == KeyEvent.VK_D) {
+        if (key == KeyEvent.VK_D) 
+        {
             lvl.samus.move(1, false);
         }
 
         if (key == KeyEvent.VK_K)
         {
             lvl.samus.shoot();
+        }
+
+        if (key == KeyEvent.VK_L)
+        {
+            lvl.samus.whip();
         }
     }
 }

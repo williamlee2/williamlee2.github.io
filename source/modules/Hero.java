@@ -11,12 +11,11 @@ public class Hero extends Entity
     int dx = 0;
     int dy = 0;
     int dxMax = 15;
-    int dyMax = 50;
+    int dyMax = 35;
     int xDirection = 1;
     int gravity;
     boolean grounded = false;
     int health = 100;
-    boolean crouch = false;
     ArrayList<Projectile> bullets = new ArrayList<Projectile>();
     Animation[] animations = new Animation[7];
     final int idleState = 0;
@@ -93,7 +92,7 @@ public class Hero extends Entity
         {
             dx = dxMax * direction;
             xDirection = direction;
-            if (animationSelect != 1)
+            if (animationSelect != runState)
             {
                 animations[animationSelect].index = 0;
                 animationSelect = runState; 
@@ -115,7 +114,7 @@ public class Hero extends Entity
     {
         if (grounded)
         {
-            if (animationSelect != 2)
+            if (animationSelect != crouchState)
             {
                 animations[animationSelect].index = 0;
                 animationSelect = crouchState;
@@ -129,7 +128,7 @@ public class Hero extends Entity
 
     public void endCrouch()
     {
-        animations[2].index = 0;
+        animations[crouchState].index = 0;
         animationSelect = idleState;
     }
 
@@ -178,5 +177,11 @@ public class Hero extends Entity
                 )
             );
         }
+    }
+
+    public void whip()
+    {
+        animations[animationSelect].index = 0; // reset previous animation
+        animationSelect = whipState;
     }
 }
