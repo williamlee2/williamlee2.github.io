@@ -115,8 +115,17 @@ public class Level extends Canvas
             if (camera.contains(p.hitBox))
             {
                 p.render(g, cameraX, cameraY);
-            }   
+            }
         }
+
+        // render UI/misc elements
+        g.setColor(Color.GREEN);
+        g.drawString("Developer: William", 10, 25);
+        g.drawString("Art by: Soulfire, Heat-Park", 10, 50);
+        g.drawString("Movement: A, S, D", 10, 75);
+        g.drawString("Jump: Space", 10, 100);
+        g.drawString("Shoot: K", 10, 125);
+        g.drawString("Whip: L", 10, 150);
     }
 
     public int checkCollision(int position, int dimension, int velocity, int axis, int axisPosition)

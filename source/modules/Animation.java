@@ -8,8 +8,8 @@ public class Animation
     Image sprites;
     static final int frameWidth = 80;
     static final int frameHeight = 80;
-    int imageWidth = 128;
-    int imageHeight = 128;
+    static final int imageWidth = 128;
+    static final int imageHeight = 128;
     int frameCount;
     int frameDuration;
     boolean looped;
@@ -53,8 +53,8 @@ public class Animation
         {
             g.drawImage(
                 sprites, 
-                x, y,
-                x - imageWidth, y + imageHeight, 
+                x + imageWidth, y,
+                x, y + imageHeight, 
                 (index / frameDuration) * frameWidth, 0,
                 ((index / frameDuration) + 1) * frameWidth, frameHeight, 
                 null

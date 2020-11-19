@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Queue;
+
+import modules.Animation;
+
 import java.util.LinkedList;
 
 public class Hero extends Entity
@@ -36,6 +39,7 @@ public class Hero extends Entity
     public Hero(int posX, int posY, int w, int h, int g)
     {
         super(posX, posY, w, h, null);
+        hitBox.width = Animation.imageWidth / 3;
         gravity = g;
         animations[idleState] = new Animation(getImage("sprites/SAMUS_IDLE.png", 3 * Animation.frameWidth, Animation.frameHeight), 3, 30, true);
         animations[runState] = new Animation(getImage("sprites/SAMUS_RUN.png", 8 * Animation.frameWidth, Animation.frameHeight), 8, 2, true);
@@ -55,22 +59,22 @@ public class Hero extends Entity
         }
         else
         {
+            // animation ended
             if (!animations[animationSelect].render(g, x, y, xDirection))
             {
                 animations[animationSelect].index = 0;
-                animationSelect = idleState;
-                animations[animationSelect].render(g, x, y, xDirection);
+                if (dx != 0)
+                {
+                    animationSelect = runState;
+                }
+                else if (animationSelect != crouchState)
+                {
+                    animationSelect = idleState;
+                }
             }
         }
         g.setColor(Color.WHITE);
-        if (xDirection == 1)
-        {
-            g.drawString(String.valueOf(health), x + (width / 3), y);
-        }
-        else
-        {
-            g.drawString(String.valueOf(health), x - (2 * width / 3), y);
-        }
+        g.drawString(String.valueOf(health), x + (3 * width / 5), y);
         g.drawRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
     }
 
@@ -142,14 +146,7 @@ public class Hero extends Entity
         x += dx;
         y += dy;
         // need to update hitbox size based on animation
-        if (xDirection == 1)
-        {
-            hitBox.setLocation(x, y);
-        }
-        else
-        {
-            hitBox.setLocation(x - width, y);
-        }
+        hitBox.setLocation(x + (Animation.imageWidth / 3), y);
         dy += gravity;
         if (Math.abs(dy) > Math.abs(dyMax))
         {
