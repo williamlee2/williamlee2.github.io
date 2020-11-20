@@ -72,10 +72,7 @@ public class Level extends Canvas
             enemies.add(e);
         }
 
-        samus = new Hero(
-            (mapWidth / 2) * tileWidth, (mapHeight / 2) * tileHeight, 
-            spriteWidth, spriteHeight, gravity
-        );
+        samus = new Hero((mapWidth / 2) * tileWidth, (mapHeight / 2) * tileHeight, gravity);
         
     }
 

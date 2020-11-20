@@ -25,7 +25,7 @@ public class Animation
 
     public boolean render(Graphics g, int x, int y, int direction)
     {
-        if ((index / frameDuration) + 1 >= frameCount)
+        if ((index / frameDuration) + 1 > frameCount)
         {
             if (looped)
             {

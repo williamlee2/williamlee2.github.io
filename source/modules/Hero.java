@@ -4,9 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Queue;
-
-import modules.Animation;
-
 import java.util.LinkedList;
 
 public class Hero extends Entity
@@ -36,10 +33,11 @@ public class Hero extends Entity
         gravity = g;
     }
 
-    public Hero(int posX, int posY, int w, int h, int g)
+    public Hero(int posX, int posY, int g)
     {
-        super(posX, posY, w, h, null);
+        super(posX, posY, Animation.imageWidth / 3, 7 * Animation.imageHeight / 10, null);
         hitBox.width = Animation.imageWidth / 3;
+        hitBox.height = 7 * Animation.imageHeight / 10;
         gravity = g;
         animations[idleState] = new Animation(getImage("sprites/SAMUS_IDLE.png", 3 * Animation.frameWidth, Animation.frameHeight), 3, 30, true);
         animations[runState] = new Animation(getImage("sprites/SAMUS_RUN.png", 8 * Animation.frameWidth, Animation.frameHeight), 8, 2, true);
@@ -62,14 +60,20 @@ public class Hero extends Entity
             // animation ended
             if (!animations[animationSelect].render(g, x, y, xDirection))
             {
-                animations[animationSelect].index = 0;
                 if (dx != 0)
                 {
+                    animations[animationSelect].index = 0;
                     animationSelect = runState;
                 }
                 else if (animationSelect != crouchState)
                 {
+                    animations[animationSelect].index = 0;
                     animationSelect = idleState;
+                }
+                else if (animationSelect == crouchState)
+                {
+                    animations[animationSelect].index = animations[animationSelect].frameDuration;
+                    animations[animationSelect].render(g, x, y, xDirection);
                 }
             }
         }
@@ -123,10 +127,6 @@ public class Hero extends Entity
                 animations[animationSelect].index = 0;
                 animationSelect = crouchState;
             }
-            else
-            {
-                animations[animationSelect].index = animations[animationSelect].frameDuration;
-            }
         }
     }
 
@@ -146,7 +146,7 @@ public class Hero extends Entity
         x += dx;
         y += dy;
         // need to update hitbox size based on animation
-        hitBox.setLocation(x + (Animation.imageWidth / 3), y);
+        hitBox.setLocation(x + (Animation.imageWidth / 3), y + (Animation.imageWidth / 8));
         dy += gravity;
         if (Math.abs(dy) > Math.abs(dyMax))
         {
