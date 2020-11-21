@@ -117,12 +117,12 @@ public class Level extends Canvas
 
         // render UI/misc elements
         g.setColor(Color.GREEN);
-        g.drawString("Developer: William", 10, 25);
-        g.drawString("Art by: Soulfire, Heat-Park", 10, 50);
-        g.drawString("Movement: A, S, D", 10, 75);
-        g.drawString("Jump: Space", 10, 100);
-        g.drawString("Shoot: K", 10, 125);
-        g.drawString("Whip: L", 10, 150);
+        g.drawString("Developed by: William", tileWidth, tileHeight + 25);
+        g.drawString("Art by: Soulfire, Heat-Park", tileWidth, tileHeight + 50);
+        g.drawString("Movement: A, S, D", tileWidth, tileHeight + 75);
+        g.drawString("Jump: Space", tileWidth, tileHeight + 100);
+        g.drawString("Shoot: K", tileWidth, tileHeight + 125);
+        g.drawString("Whip: L", tileWidth, tileHeight + 150);
     }
 
     public int checkCollision(int position, int dimension, int velocity, int axis, int axisPosition)
@@ -245,7 +245,7 @@ public class Level extends Canvas
 
         // update samus
         // check horizontal collision
-        collision = checkCollision(samus.x, samus.width, samus.dx, 1, samus.y);
+        collision = checkCollision(samus.hitBox.x, samus.hitBox.width, samus.dx, 1, samus.hitBox.y);
         if (collision != 0)
         {
             if (collision == -1)
@@ -254,15 +254,15 @@ public class Level extends Canvas
             }
             else if (collision == 1)
             {
-                samus.dx = tileWidth - (samus.x % tileWidth);
+                samus.dx = tileWidth - (samus.hitBox.x % tileWidth);
             }
             else if (collision == 2)
             {
-                samus.dx = tileWidth - ((samus.x + samus.width) % tileWidth);
+                samus.dx = tileWidth - ((samus.hitBox.x + samus.hitBox.width) % tileWidth);
             }
         }
         // check vertical collision
-        collision = checkCollision(samus.y, samus.height, samus.dy, 0, samus.x);
+        collision = checkCollision(samus.hitBox.y, samus.hitBox.height, samus.dy, 0, samus.hitBox.x);
         if (collision != 0)
         {
             if (collision == -1)
@@ -271,14 +271,14 @@ public class Level extends Canvas
             }
             else if (collision == 1)
             {
-                samus.dy = tileHeight - (samus.y % tileHeight);
+                samus.dy = tileHeight - (samus.hitBox.y % tileHeight);
             }
             else if (collision == 2)
             {
-                samus.dy = tileHeight - ((samus.y + samus.height) % tileHeight);
+                samus.dy = tileHeight - ((samus.hitBox.y + samus.hitBox.height) % tileHeight);
             }
         }
-        samus.grounded = map[samus.x / tileWidth][(samus.y + samus.height) / tileHeight].collision;
+        samus.grounded = map[samus.hitBox.x / tileWidth][(samus.hitBox.y + samus.hitBox.height) / tileHeight].collision;
         samus.update();
 
         if (enemies.isEmpty())

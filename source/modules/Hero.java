@@ -16,7 +16,12 @@ public class Hero extends Entity
     int gravity;
     boolean grounded = false;
     int health = 100;
+    int weapon = Projectile.bullet;
     ArrayList<Projectile> bullets = new ArrayList<Projectile>();
+    final int frameWidth = 80;
+    final int frameHeight = 80;
+    static final int imageWidth = 128;
+    static final int imageHeight = 128;
     Animation[] animations = new Animation[7];
     final int idleState = 0;
     final int runState = 1;
@@ -35,17 +40,45 @@ public class Hero extends Entity
 
     public Hero(int posX, int posY, int g)
     {
-        super(posX, posY, Animation.imageWidth / 3, 7 * Animation.imageHeight / 10, null);
-        hitBox.width = Animation.imageWidth / 3;
-        hitBox.height = 7 * Animation.imageHeight / 10;
+        super(posX, posY, imageWidth / 3, 7 * imageHeight / 10, null);
+        hitBox.width = imageWidth / 3;
+        hitBox.height = 7 * imageHeight / 10;
         gravity = g;
-        animations[idleState] = new Animation(getImage("sprites/SAMUS_IDLE.png", 3 * Animation.frameWidth, Animation.frameHeight), 3, 30, true);
-        animations[runState] = new Animation(getImage("sprites/SAMUS_RUN.png", 8 * Animation.frameWidth, Animation.frameHeight), 8, 2, true);
-        animations[crouchState] = new Animation(getImage("sprites/SAMUS_CROUCH.png", 2 * Animation.frameWidth, Animation.frameHeight), 2, 2, false);
-        animations[jumpState] = new Animation(getImage("sprites/SAMUS_JUMP.png", 5 * Animation.frameWidth, Animation.frameHeight), 5, 2, false);
-        animations[shootState] = new Animation(getImage("sprites/SAMUS_SHOOT.png", 3 * Animation.frameWidth, Animation.frameHeight), 3, 2, false);
-        animations[whipState] = new Animation(getImage("sprites/SAMUS_WHIP.png", 9 * Animation.frameWidth, Animation.frameHeight), 9, 2, false);
-        animations[hitState] = new Animation(getImage("sprites/SAMUS_HIT.png", 8 * Animation.frameWidth, Animation.frameHeight), 8, 2, false);
+        animations[idleState] = new Animation(
+            getImage("sprites/SAMUS_IDLE.png", 3 * frameWidth, frameHeight), 
+            frameWidth, frameHeight, imageWidth, imageHeight,
+            3, 30, true
+        );
+        animations[runState] = new Animation(
+            getImage("sprites/SAMUS_RUN.png", 8 * frameWidth, frameHeight),
+            frameWidth, frameHeight, imageWidth, imageHeight,
+            8, 2, true
+        );
+        animations[crouchState] = new Animation(
+            getImage("sprites/SAMUS_CROUCH.png", 2 * frameWidth, frameHeight),
+            frameWidth, frameHeight, imageWidth, imageHeight,
+            2, 2, false
+        );
+        animations[jumpState] = new Animation(
+            getImage("sprites/SAMUS_JUMP.png", 5 * frameWidth, frameHeight), 
+            frameWidth, frameHeight, imageWidth, imageHeight,
+            5, 2, false
+        );
+        animations[shootState] = new Animation(
+            getImage("sprites/SAMUS_SHOOT.png", 3 * frameWidth, frameHeight), 
+            frameWidth, frameHeight, imageWidth, imageHeight,
+            3, 2, false
+        );
+        animations[whipState] = new Animation(
+            getImage("sprites/SAMUS_WHIP.png", 9 * frameWidth, frameHeight), 
+            frameWidth, frameHeight, imageWidth, imageHeight,
+            9, 2, false
+        );
+        animations[hitState] = new Animation(
+            getImage("sprites/SAMUS_HIT.png", 8 * frameWidth, frameHeight), 
+            frameWidth, frameHeight, imageWidth, imageHeight,
+            8, 2, false
+        );
     }
 
     public void render(Graphics g, int offSetX, int offSetY)
@@ -58,7 +91,7 @@ public class Hero extends Entity
         else
         {
             // animation ended
-            if (!animations[animationSelect].render(g, x, y, xDirection))
+            if (!animations[animationSelect].render(g, x - offSetX, y - offSetY, xDirection))
             {
                 if (dx != 0)
                 {
@@ -73,8 +106,8 @@ public class Hero extends Entity
                 else if (animationSelect == crouchState)
                 {
                     animations[animationSelect].index = animations[animationSelect].frameDuration;
-                    animations[animationSelect].render(g, x, y, xDirection);
                 }
+                animations[animationSelect].render(g, x - offSetX, y - offSetY, xDirection);
             }
         }
         g.setColor(Color.WHITE);
@@ -132,13 +165,23 @@ public class Hero extends Entity
 
     public void endCrouch()
     {
-        animations[crouchState].index = 0;
-        animationSelect = idleState;
+        if (animationSelect == crouchState)
+        {
+            animations[crouchState].index = 0;
+            animationSelect = idleState;
+        }
     }
 
     public void swapWeapon()
     {
-        
+        if (weapon == Projectile.bullet)
+        {
+            weapon = Projectile.beam;
+        }
+        else
+        {
+            weapon = Projectile.bullet;
+        }
     }
 
     public void update()
@@ -146,7 +189,7 @@ public class Hero extends Entity
         x += dx;
         y += dy;
         // need to update hitbox size based on animation
-        hitBox.setLocation(x + (Animation.imageWidth / 3), y + (Animation.imageWidth / 8));
+        hitBox.setLocation(x + (imageWidth / 3), y + (imageWidth / 8));
         dy += gravity;
         if (Math.abs(dy) > Math.abs(dyMax))
         {
@@ -160,19 +203,11 @@ public class Hero extends Entity
         animationSelect = shootState;
         if (xDirection == 1)
         {
-            bullets.add(new Projectile(x + width, y + (height / 4), 
-                    64, 16, 
-                    "sprites/BULLET.png", xDirection
-                )
-            );
+            bullets.add(new Projectile(x + width, y + (height / 4), xDirection, weapon));
         }
         else
         {
-            bullets.add(new Projectile(x, y + (height / 4), 
-                    64, 16, 
-                    "sprites/BULLET.png", xDirection
-                )
-            );
+            bullets.add(new Projectile(x, y + (height / 4), xDirection, weapon));
         }
     }
 

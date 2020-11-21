@@ -6,18 +6,22 @@ import java.awt.Graphics;
 public class Animation
 {
     Image sprites;
-    static final int frameWidth = 80;
-    static final int frameHeight = 80;
-    static final int imageWidth = 128;
-    static final int imageHeight = 128;
+    int frameWidth;
+    int frameHeight;
+    int imageWidth;
+    int imageHeight;
     int frameCount;
     int frameDuration;
     boolean looped;
     int index = 0;
 
-    public Animation(Image spriteSheet, int fc, int fd, boolean l)
+    public Animation(Image spriteSheet, int fw, int fh, int iw, int ih, int fc, int fd, boolean l)
     {
         sprites = spriteSheet;
+        frameWidth = fw;
+        frameHeight = fh;
+        imageWidth = iw;
+        imageHeight = ih;
         frameCount = fc;
         frameDuration = fd;
         looped = l;
