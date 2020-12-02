@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Enemy extends Entity
 {
+    static int xBound;
     int direction = 0;
     int dx = 0;
     int dy = 0;
@@ -26,6 +27,11 @@ public class Enemy extends Entity
         }
     }
 
+    public static void setXBound(int mapWidth)
+    {
+        xBound = mapWidth;
+    }
+
     public void render(Graphics g, int offSetX, int offSetY)
     {
         super.render(g, offSetX, offSetY);
@@ -43,22 +49,26 @@ public class Enemy extends Entity
         {
             dy = (dy / Math.abs(dy)) * dyMax;
         }
-        int nextMove = ThreadLocalRandom.current().nextInt(0, 75);
-        if (nextMove == 0)
+        int change = ThreadLocalRandom.current().nextInt(0, 10);
+        if (change == 0)
         {
-            // change direction
-            direction *= -1;
-            dx = dxMax * direction;
-        }
-        else if (nextMove < 3)
-        {
-            // stop
-            dx = 0;
-        }
-        else
-        {
-            // continue same direction
-            dx = dxMax * direction;
+            int nextMove = ThreadLocalRandom.current().nextInt(0, xBound);
+            if (nextMove < x)
+            {
+                // accelerate right
+                if (dx > -dxMax)
+                {
+                    dx -= dxMax / 10;
+                }
+            }
+            else
+            {
+                // accelerate left
+                if (dx < dxMax)
+                {
+                    dx += dxMax / 10;
+                }
+            }
         }
     }
 

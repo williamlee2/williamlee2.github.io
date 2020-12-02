@@ -71,6 +71,7 @@ public class Level extends Canvas
             Enemy e = new Enemy(x, y, spriteWidth, spriteHeight, gravity);
             enemies.add(e);
         }
+        Enemy.setXBound(mapWidth * tileWidth);
 
         samus = new Hero((mapWidth / 2) * tileWidth, (mapHeight / 2) * tileHeight, gravity);
         
