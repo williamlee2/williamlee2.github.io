@@ -81,33 +81,35 @@ public class Level extends Canvas
 
     public void generatePath(int xTile, int yTile)
     {
-        if (yTile <= 2)
+        if (yTile <= 2 || xTile - 3 < 1)
         {
             return;
         }
         
         map[xTile][yTile].collision = true;
 
-        int up = ThreadLocalRandom.current().nextInt(2);
-        int left = 0;
-        int right = 0;
-        if (!map[xTile + 1][yTile].collision)
-        {
-            right = ThreadLocalRandom.current().nextInt(11);
-        }
-        if (!map[xTile - 1][yTile].collision)
-        {
-            left = 10 - right;
-        }
+        // int up = ThreadLocalRandom.current().nextInt(2);
+        // int left = 0;
+        // int right = 0;
+        // if (xTile + 2 < mapWidth - 1)
+        // {
+        //     right = ThreadLocalRandom.current().nextInt(1, 11);
+        // }
+        // if (xTile - 2 > 1)
+        // {
+        //     left = 10 - right;
+        // }
 
-        if (left >= right)
-        {
-            generatePath(xTile - (1 + up), yTile - up);
-        }
-        else if (left < right)
-        {
-            generatePath(xTile + (1 + up), yTile - up);
-        }
+        // if (left >= right)
+        // {
+        //     generatePath(xTile - 2, yTile - up);
+        // }
+        // else if (left < right)
+        // {
+        //     generatePath(xTile + 2, yTile - up);
+        // }
+
+        generatePath(xTile - 3, yTile - 2);
     }
 
     public void render(Graphics g)
