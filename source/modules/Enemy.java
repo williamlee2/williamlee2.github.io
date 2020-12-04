@@ -7,12 +7,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Enemy extends Entity
 {
     static int xBound;
+    static int gravity;
+    static int dxMax = 10;
+    static int dyMax = 25;
     int direction = 0;
     int dx = 0;
     int dy = 0;
-    int gravity;
-    int dxMax = 10;
-    int dyMax = 25;
     int health = 100;
 
     public Enemy(int posX, int posY, int l, int w, int g)
@@ -55,7 +55,7 @@ public class Enemy extends Entity
             int nextMove = ThreadLocalRandom.current().nextInt(0, xBound);
             if (nextMove < x)
             {
-                // accelerate right
+                // accelerate left
                 if (dx > -dxMax)
                 {
                     dx -= dxMax / 10;
@@ -63,7 +63,7 @@ public class Enemy extends Entity
             }
             else
             {
-                // accelerate left
+                // accelerate right
                 if (dx < dxMax)
                 {
                     dx += dxMax / 10;

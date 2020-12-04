@@ -62,19 +62,52 @@ public class Level extends Canvas
             }
         }
 
+        generatePath(mapWidth - 2, mapHeight - 2);
+
         // monsters on map
         for (int i = 0; i < 3; i++)
         {
             // random spawn locations inside map
-            int x = ThreadLocalRandom.current().nextInt(1, (mapWidth - 1)) * tileWidth;
-            int y = (mapHeight / 2) * tileHeight;
+            int x = ThreadLocalRandom.current().nextInt(1, 6) * tileWidth;
+            int y = (mapHeight - 4) * tileHeight;
             Enemy e = new Enemy(x, y, spriteWidth, spriteHeight, gravity);
             enemies.add(e);
         }
         Enemy.setXBound(mapWidth * tileWidth);
 
-        samus = new Hero((mapWidth / 2) * tileWidth, (mapHeight / 2) * tileHeight, gravity);
+        samus = new Hero((mapWidth / 2) * tileWidth, (mapHeight - 3) * tileHeight, gravity);
         
+    }
+
+    public void generatePath(int xTile, int yTile)
+    {
+        if (yTile <= 2)
+        {
+            return;
+        }
+        
+        map[xTile][yTile].collision = true;
+
+        int up = ThreadLocalRandom.current().nextInt(2);
+        int left = 0;
+        int right = 0;
+        if (!map[xTile + 1][yTile].collision)
+        {
+            right = ThreadLocalRandom.current().nextInt(11);
+        }
+        if (!map[xTile - 1][yTile].collision)
+        {
+            left = 10 - right;
+        }
+
+        if (left >= right)
+        {
+            generatePath(xTile - (1 + up), yTile - up);
+        }
+        else if (left < right)
+        {
+            generatePath(xTile + (1 + up), yTile - up);
+        }
     }
 
     public void render(Graphics g)
@@ -126,71 +159,47 @@ public class Level extends Canvas
         g.drawString("Whip: L", tileWidth, tileHeight + 150);
     }
 
-    public int checkCollision(int position, int dimension, int velocity, int axis, int axisPosition)
+    public int checkCollision(Rectangle box, int dx, int dy)
     {
-        if (velocity == 0)
+        int collisionCode = 0;
+        int nextLeft = (box.x + dx) / tileWidth;
+        int nextRight = (box.x + box.width + dx) / tileWidth;
+        int nextTop = (box.y + dy) / tileHeight;
+        int nextBottom = (box.y + box.height + dy) / tileHeight;
+        int left = box.x / tileWidth;
+        int right = (box.x + box.width) / tileWidth;
+        int top = box.y / tileHeight;
+        int bottom = (box.y + box.height) / tileHeight;
+        if (dx > 0)
         {
-            return 0;
-        }
-        int p;
-        int pd;
-        int ap;
-        int mapBound;
-        // next positions
-        if (axis == 0)
-        {
-            // vertical
-            ap = axisPosition / tileHeight;
-            pd = ((position + dimension) / tileHeight) + (velocity / Math.abs(velocity));
-            p = (position / tileHeight) + (velocity / Math.abs(velocity));
-            mapBound = mapHeight;
-        }
-        else
-        {
-            // horizontal
-            ap = axisPosition / tileWidth;
-            pd = ((position + dimension) / tileWidth) + (velocity / Math.abs(velocity));
-            p = (position / tileWidth) + (velocity / Math.abs(velocity));
-            mapBound = mapWidth;
-        }
-        
-        if ((0 <= p && p < mapBound) && (0 <= pd && pd < mapBound))
-        {
-            if (axis == 0)
+            if (map[nextRight][top].collision || map[nextRight][bottom].collision)
             {
-                // collision above
-                if (map[ap][p].collision)
-                {
-                    return 1;
-                }
-                // collision below
-                else if (map[ap][pd].collision)
-                {
-                    return 2;
-                }
+                collisionCode += 10;
             }
-            else
-            {
-                // collision left
-                if (map[p][ap].collision)
-                {
-                    return 3;
-                }
-                // collision right
-                else if (map[pd][ap].collision)
-                {
-                    return 4;
-                }
-            }
-            return 0; // no collision
         }
-        else
+        else if (dx < 0)
         {
-            // out of bounds
-            return -1;
+            if (map[nextLeft][top].collision || map[nextLeft][bottom].collision)
+            {
+                collisionCode += 20;
+            }
         }
+        if (dy > 0)
+        {
+            if (map[right][nextBottom].collision || map[left][nextBottom].collision)
+            {
+                collisionCode += 1;
+            }
+        }
+        else if (dy < 0)
+        {
+            if (map[right][nextTop].collision || map[left][nextTop].collision)
+            {
+                collisionCode += 2;
+            }
+        }
+        return collisionCode;
     }
-
 
     // update projectiles, samus, enemies
     public void updateGame()
@@ -201,7 +210,7 @@ public class Level extends Canvas
         for (int i = 0; i < samus.bullets.size(); i++)
         {
             Projectile p = samus.bullets.get(i);
-            collision = checkCollision(p.x, p.width, p.dx, 1, p.y);
+            collision = checkCollision(p.hitBox, p.dx, p.dy);
             Boolean hit = false;
             if (p.dx > 0)
             {
@@ -245,47 +254,29 @@ public class Level extends Canvas
         }
 
         // update samus
-        // check horizontal collision
-        collision = checkCollision(samus.hitBox.x, samus.hitBox.width, samus.dx, 1, samus.hitBox.y);
+        // check collisions
+        collision = checkCollision(samus.hitBox, samus.dx, samus.dy);
         if (collision != 0)
         {
-            if (collision == -1)
+            if ((collision / 10) == 1 || (collision / 10) == 2)
             {
                 samus.dx = 0;
             }
-            else if (collision == 1)
-            {
-                samus.dx = tileWidth - (samus.hitBox.x % tileWidth);
-            }
-            else if (collision == 2)
-            {
-                samus.dx = tileWidth - ((samus.hitBox.x + samus.hitBox.width) % tileWidth);
-            }
-        }
-        // check vertical collision
-        collision = checkCollision(samus.hitBox.y, samus.hitBox.height, samus.dy, 0, samus.hitBox.x);
-        if (collision != 0)
-        {
-            if (collision == -1)
+            if ((collision % 10) == 1 || (collision % 10) == 2)
             {
                 samus.dy = 0;
             }
-            else if (collision == 1)
-            {
-                samus.dy = tileHeight - (samus.hitBox.y % tileHeight);
-            }
-            else if (collision == 2)
-            {
-                samus.dy = tileHeight - ((samus.hitBox.y + samus.hitBox.height) % tileHeight);
-            }
         }
-        samus.grounded = map[samus.hitBox.x / tileWidth][(samus.hitBox.y + samus.hitBox.height) / tileHeight].collision;
+        
+        
+        samus.grounded = map[(samus.hitBox.x + samus.hitBox.width) / tileWidth][(samus.hitBox.y + samus.hitBox.height + 10) / tileHeight].collision;
         samus.update();
 
         if (enemies.isEmpty())
         {
             int x = ThreadLocalRandom.current().nextInt(1, (mapWidth - 1)) * tileWidth;
-            Enemy e = new Enemy(x, (mapHeight / 2) * tileHeight, spriteWidth, spriteHeight, gravity);
+            int y = (mapHeight - 4) * tileHeight;
+            Enemy e = new Enemy(x, y, spriteWidth, spriteHeight, gravity);
             enemies.add(e);
         }
         else
@@ -293,37 +284,16 @@ public class Level extends Canvas
             for (Enemy e : enemies)
             {
                 // check horizontal collision
-                collision = checkCollision(e.x, e.width, e.dx, 1, e.y);
+                collision = checkCollision(e.hitBox, e.dx, e.dy);
                 if (collision != 0)
                 {
-                    if (collision == -1)
+                    if ((collision / 10) == 1 || (collision / 10) == 2)
                     {
                         e.dx = 0;
                     }
-                    else if (collision == 1)
+                    if ((collision % 10) == 1 || (collision % 10) == 2)
                     {
-                        e.dx = tileWidth - (e.x % tileWidth);
-                    }
-                    else if (collision == 2)
-                    {
-                        e.dx = tileWidth - ((e.x + e.width) % tileWidth);
-                    }
-                }
-                // check vertical collision
-                collision = checkCollision(e.y, e.height, e.dy, 0, e.x);
-                if (collision != 0)
-                {
-                    if (collision == -1)
-                    {   
                         e.dy = 0;
-                    }
-                    else if (collision == 1)
-                    {
-                        e.dy = tileHeight - (e.y % tileHeight);
-                    }
-                    else if (collision == 2)
-                    {
-                        e.dy = tileHeight - ((e.y + e.height) % tileHeight);
                     }
                 }
                 e.move();
