@@ -21,7 +21,7 @@ public class Level extends Canvas
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     Hero samus;
     final int spriteWidth = 64;
-    final int spriteHeight = 128;
+    final int spriteHeight = 96;
     final int gravity = 5;
     int screenWidth;
     int screenHeight;
@@ -62,7 +62,8 @@ public class Level extends Canvas
             }
         }
 
-        generatePath(mapWidth - 2, mapHeight - 2);
+        generateFloors(3);
+        generatePath(3);
 
         // monsters on map
         for (int i = 0; i < 3; i++)
@@ -79,37 +80,42 @@ public class Level extends Canvas
         
     }
 
-    public void generatePath(int xTile, int yTile)
+    public void generateFloors(int row)
     {
-        if (yTile <= 2 || xTile - 3 < 1)
+        if (row >= mapHeight - 1)
         {
             return;
         }
-        
-        map[xTile][yTile].collision = true;
+        for (int x = 0; x < mapWidth; x++)
+        {
+            map[x][row].collision = true;
+        }
+        generateFloors(row + 4);
+    }
 
-        // int up = ThreadLocalRandom.current().nextInt(2);
-        // int left = 0;
-        // int right = 0;
-        // if (xTile + 2 < mapWidth - 1)
-        // {
-        //     right = ThreadLocalRandom.current().nextInt(1, 11);
-        // }
-        // if (xTile - 2 > 1)
-        // {
-        //     left = 10 - right;
-        // }
-
-        // if (left >= right)
-        // {
-        //     generatePath(xTile - 2, yTile - up);
-        // }
-        // else if (left < right)
-        // {
-        //     generatePath(xTile + 2, yTile - up);
-        // }
-
-        generatePath(xTile - 3, yTile - 2);
+    public void generatePath(int row)
+    {
+        if (row >= mapHeight - 1)
+        {
+            return;
+        }
+        int x = ThreadLocalRandom.current().nextInt(1, mapWidth - 1);
+        map[x][row].collision = false;
+        if (x + 2 < mapWidth)
+        {
+            map[x + 1][row].collision = false;
+            map[x + 2][row].collision = false;
+        }
+        if (x - 2 > 1)
+        {
+            map[x - 1][row].collision = false;
+            map[x - 2][row].collision = false;
+        }
+        if (row + 2 < mapHeight - 1)
+        {
+            map[x][row + 2].collision = true;
+        }
+        generatePath(row + 4);
     }
 
     public void render(Graphics g)

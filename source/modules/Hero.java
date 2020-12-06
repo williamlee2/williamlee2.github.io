@@ -111,8 +111,8 @@ public class Hero extends Entity
             }
         }
         g.setColor(Color.WHITE);
-        g.drawString(String.valueOf(health), x + (3 * width / 5), y);
-        g.drawRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
+        g.drawString(String.valueOf(health), x + (3 * width / 5) - offSetX, y - offSetY);
+        g.drawRect(hitBox.x - offSetX, hitBox.y - offSetY, hitBox.width, hitBox.height);
     }
 
     public void move(int direction, boolean yAxis)

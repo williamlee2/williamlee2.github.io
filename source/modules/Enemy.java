@@ -36,7 +36,7 @@ public class Enemy extends Entity
     {
         super.render(g, offSetX, offSetY);
         g.setColor(Color.WHITE);
-        g.drawString(String.valueOf(health), x + (width / 3), y);
+        g.drawString(String.valueOf(health), x + (width / 3) - offSetX, y - offSetY);
     }
 
     public void move()
